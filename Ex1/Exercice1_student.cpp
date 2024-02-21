@@ -54,9 +54,9 @@ private:
   {
   // TODO calculer l'energie mecanique
     double Energy =  0.0;
-    double T = 0.5 * mass * (y[2]*y[2] + y[3]*y[3])
-    double U = mass * g * y[1]
-    Energy = T + U
+    double T = 0.5 * mass * (y[2]*y[2] + y[3]*y[3]);
+    double U = mass * g * y[1];
+    Energy = T + U;
 
     // Ecriture tous les [sampling] pas de temps, sauf si write est vrai
     if((!write && last>=sampling) || (write && last!=1))
@@ -74,7 +74,7 @@ private:
   // TODO écrire la fonction 
     void compute_f(valarray<double>& f) const
     {
-      double Frict = mu*(R^3)*rho*omega;
+      double Frict = mu*(pow(R,3))*rho*omega;
       
       f[0] = y[2];
       f[1] = y[3];
@@ -96,16 +96,16 @@ private:
       // TODO écrire l'algorithme qui peut être explicite, implicite ou semi-implicite d'Euler en variant alpha 
         yold = y;
         if(alpha == 1){
-          compute_f(f)
-          y = yold + alpha*f*dt
+          compute_f(f);
+          y = yold + alpha*f*dt;
         }else{
           while (iteration < maxit && error > tol){
             compute_f(f);
             y = yold + (alpha*f + (1-alpha)*f)*dt;
             delta_y_EE = y - yold - (alpha*f + (1-alpha)*f)*dt;
             error = abs(delta_y_EE[0]) + abs(delta_y_EE[1]) + abs(delta_y_EE[2]) + abs(delta_y_EE[3]);
-            iteration++
-          }
+            iteration++;
+          };
         }
       }
       else
