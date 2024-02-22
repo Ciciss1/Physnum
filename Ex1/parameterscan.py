@@ -68,6 +68,7 @@ fig, ax = plt.subplots(constrained_layout=True)
 ax.plot(data[:, 1], data[:, 2])
 ax.set_xlabel('x [m]', fontsize=fs)
 ax.set_ylabel('y [m]', fontsize=fs)
+plt.savefig('plot1.png')
 
 
 
@@ -81,6 +82,7 @@ plt.ylabel('final position error [m]', fontsize=fs)
 plt.xticks(fontsize=fs)
 plt.yticks(fontsize=fs)
 plt.grid(True)
+plt.savefig('plot2.png')
 
 """
 Si on n'a pas la solution analytique: on représente la quantite voulue
@@ -96,5 +98,6 @@ plt.ylabel('v_y [m/s]', fontsize=fs)
 plt.xticks(fontsize=fs)
 plt.yticks(fontsize=fs)
 plt.grid(True)
+plt.savefig('plot3.png')
 
 plt.show()
