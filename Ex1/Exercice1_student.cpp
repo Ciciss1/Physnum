@@ -74,12 +74,12 @@ private:
   // TODO écrire la fonction 
     void compute_f(valarray<double>& f) const
     {
-      double Frict = mu*(pow(R,3))*rho*omega;
+      double Frict = 0.0;
       
       f[0] = y[2];
       f[1] = y[3];
-      f[2] = (-Frict * y[3])/mass;
-      f[3] = - g + ((Frict * y[2])/mass);
+      f[2] = (-mu*(pow(R,3))*rho*omega*y[3])/mass;
+      f[3] = - g + ((mu*(pow(R,3))*rho*omega*y[2])/mass);
     }
 
     // New step method from EngineEuler
@@ -95,18 +95,15 @@ private:
       if(alpha >= 0. && alpha <= 1.0){
       // TODO écrire l'algorithme qui peut être explicite, implicite ou semi-implicite d'Euler en variant alpha 
         yold = y;
-        if(alpha == 1){
+        compute_f(f);
+        delta_y_EE = f;
+        while(iteration < maxit && error > tol){
+          y = yold + (alpha*delta_y_EE + (1-alpha)*f)*dt;
           compute_f(f);
-          y = yold + alpha*f*dt;
-        }else{
-          while (iteration < maxit && error > tol){
-            compute_f(f);
-            y = yold + (alpha*f + (1-alpha)*f)*dt;
-            delta_y_EE = y - yold - (alpha*f + (1-alpha)*f)*dt;
-            error = abs(delta_y_EE[0]) + abs(delta_y_EE[1]) + abs(delta_y_EE[2]) + abs(delta_y_EE[3]);
-            iteration++;
-          };
-        }
+          y_control = y - yold - (alpha*delta_y_EE + (1-alpha)*f)*dt;
+          error = sqrt(pow(y_control[0],2) + pow(y_control[1],2) + pow(y_control[2],2) + pow(y_control[3],2));
+          ++iteration;
+        };
       }
       else
       {
