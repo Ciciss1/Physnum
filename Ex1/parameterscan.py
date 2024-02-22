@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # Parameters
 # TODO adapt to what you need (folder path executable input filename)
 repertoire = './'  # Path to the compiled code (NB: ./ is not required on Windows)
-executable = 'exe'  # Name of the executable (NB: .exe extension is required on Windows)
+executable = 'Exercice1_student.exe'  # Name of the executable (NB: .exe extension is required on Windows)
 input_filename = 'configuration.in.example'  # Name of the input file
 
 
@@ -18,7 +18,7 @@ dt = tfin / nsteps
 
 # Analysis
 # TODO insert the values
-m = 0  
+m = 0.056  
 v = 0
 omega = 0  
 # add the other variables
