@@ -54,7 +54,7 @@ private:
   {
   // TODO calculer l'energie mecanique
     double Energy =  0.0;
-    double T = 0.5 * mass * (y[2]*y[2] + y[3]*y[3]);
+    double T = 0.5 * mass * (y[2]*y[2] + y[3]*y[3]) + 0.2 * mass * pow(R,2) * pow(omega,2);
     double U = mass * g * y[1];
     Energy = T + U;
 
