@@ -77,7 +77,7 @@ def linear_fit(x,y,color,
     
     y_fit = a*x_fit + b
     
-    to_return = [a,a_error]
+    to_return = [a,a_error,b,b_error]
     
     
     if multiply != 0 : 

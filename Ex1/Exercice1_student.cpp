@@ -62,7 +62,7 @@ private:
     if((!write && last>=sampling) || (write && last!=1))
     {
       *outputFile << t << " " << y[0] << " " << y[1] << " " \
-      << y[2] << " " << y[3] << " " << Energy<< endl; // write output on file
+      << y[2] << " " << y[3] << " " << Energy << endl; // write output on file
       last = 1;
     }
     else
@@ -109,7 +109,8 @@ private:
       {
         cerr << "alpha not valid" << endl;
       }
-  
+      
+      t += dt;
     }
 
 public:
