@@ -97,13 +97,13 @@ private:
         yold = y;
         compute_f(f);
         delta_y_EE = f;
-        while(iteration < maxit && error > tol){
+        do{
           y = yold + (alpha*delta_y_EE + (1-alpha)*f)*dt;
           compute_f(f);
           y_control = y - yold - (alpha*delta_y_EE + (1-alpha)*f)*dt;
           error = sqrt(pow(y_control[0],2) + pow(y_control[1],2) + pow(y_control[2],2) + pow(y_control[3],2));
           ++iteration;
-        };
+        }while (iteration < maxit && error > tol);
       }
       else
       {
