@@ -9,8 +9,8 @@ repertoire = './'  # Path to the compiled code (NB: ./ is not required on Window
 executable = 'Exercice1_student'  # Name of the executable (NB: .exe extension is required on Windows)
 input_filename = 'configuration.in.example'  # Name of the input file
 
-prefix = "g0_Semi_"
-ext = "pdf"
+prefix = "g0_Explicite_"
+ext = "png"
 
 nsteps =np.array([5,10,20,50,100,200,500]) # TODO change
 nsimul = len(nsteps)  # Number of simulations to perform
@@ -146,7 +146,7 @@ x = np.linspace(0.1,13,1000)
 ax.plot(x, (x**a)*np.exp(b), color = "navy", label = rf"$y = e^{{{b:.3f}}}x^{{{a:.3f}}}$") 
 ax.legend()
 u.set_legend_properties(ax,colors=["black","navy"], fontsize = 20, loc = "upper left",markers=["+","-"],ncol = 1)
-u.save_pdf(fig, prefix + "Erreurs_position" + "." + ext)
+u.save_png(fig, prefix + "Erreurs_position" + "." + ext)
 
 
 
@@ -154,12 +154,12 @@ ax,fig = u.create_figure_and_apply_format(figsize=(10, 6),xlabel=r"$\Delta$ t [s
 ax.scatter(dt, error_mec, label = "Erreurs énergie", color = "black", marker = "+", s=100)
 ax.set_xscale('log')
 ax.set_yscale('log')
-# a,a_error, b, b_error = u.linear_fit(np.log(dt),np.log(error_mec), color = "red", ax = ax, precisions = [4,4], plot = False)
-# x = np.linspace(0.1,13,1000)
-# ax.plot(x, (x**a)*np.exp(b), color = "red", label = rf"$y = e^{{{b:.3f}}}x^{{{a:.3f}}}$") 
+a,a_error, b, b_error = u.linear_fit(np.log(dt),np.log(error_mec), color = "red", ax = ax, precisions = [4,4], plot = False)
+x = np.linspace(0.1,13,1000)
+ax.plot(x, (x**a)*np.exp(b), color = "red", label = rf"$y = e^{{{b:.3f}}}x^{{{a:.3f}}}$") 
 ax.legend()
 u.set_legend_properties(ax,colors=["black","navy"], fontsize = 20, loc = "upper left",markers=["+","-"],ncol = 1)
-u.save_pdf(fig,prefix + "Erreurs_energie" + "." + ext)
+u.save_png(fig,prefix + "Erreurs_energie" + "." + ext)
 
 
 # plt.figure()
