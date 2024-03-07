@@ -51,15 +51,15 @@ private:
   double Emec(double theta_, double thetadot_, double t_)
   {
     double E;
-    E = (1/2)*m*(pow(length(t_),2)*pow(thetadot_,2)) - m*g*length(t_)*cos(theta_);
+    E = 0.5*m*(pow(lendot(t_),2) + pow(length(t_)*thetadot_,2)) - m*g*length(t_)*cos(theta_);
     return  E;
   }
 
     // TODO Définir la puissance des forces non conservatrices 
   double Pnonc(double theta_, double thetadot_, double t_)
   {
-    double thetadotdot_ = g*sin(theta_)/length(t_);
-    double P = m*(length(t_)*lendot(t_)*pow(thetadot_,2) + pow(length(t_),2)*thetadot_*thetadotdot_ + lendot(t_)*lendotdot(t_) - g*lendot(t_)*cos(theta_) + g*length(t_)*thetadot_*sin(theta_));
+    double thetadotdot_ = (-g*sin(theta_) - 2 * lendot(t_) * thetadot_)/length(t_);
+    double P = m*(lendot(t_) * lendotdot(t_) + length(t_) * lendot(t_) * pow(thetadot_,2) + thetadot_ * thetadotdot_ * pow(length(t_),2) - g * lendot(t_) * cos(theta_) + g * length(t_) * thetadot_ * sin(theta_));
     return  P;
   }
 
