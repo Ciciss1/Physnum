@@ -142,12 +142,15 @@ public:
 
     if(N_excit>0){
       // TODO Définir le pas temporel et le temp final si N_excit est défini.
-      tFin = 10.0;
-      dt   = 1.0;
+      //fréq. d'exc. = T = 2pi/omega = pi/omega_0
+      double omega_0 = sqrt(g/L);
+      double T_exc = pi/omega_0;
+      tFin = N_excit*T_exc;
+      dt   = T_exc/nsteps_per;
     }
     else{
       // TODO Définir le pas temporel si N_excit n'est pas défini.
-      dt = 1.0;
+      dt = tFin / nsteps_per;
     }
   }
 
