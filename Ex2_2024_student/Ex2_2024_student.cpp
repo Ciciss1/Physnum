@@ -41,8 +41,8 @@ private:
   {
     valarray<double> acc = valarray<double>(2);
 
-    acc[0] = g*sin(theta_)/length(t_); // accélération dépendant uniquement de x
-    acc[1] = 0 ; // accélération dépendant uniquement de v
+    acc[0] = - g*sin(theta_)/length(t_); // accélération dépendant uniquement de x
+    acc[1] = (-2/length(t_))*lendot(t_)*thetadot_ ; // accélération dépendant uniquement de v
 
     return acc;
   }
@@ -51,7 +51,7 @@ private:
   double Emec(double theta_, double thetadot_, double t_)
   {
     double E;
-    E = (1/2)*m*(pow(length(t_),2)*pow(thetadot_,2)) + m*g*length(t_)*cos(theta_);
+    E = (1/2)*m*(pow(length(t_),2)*pow(thetadot_,2)) - m*g*length(t_)*cos(theta_);
     return  E;
   }
 
@@ -89,12 +89,23 @@ private:
 
     void step()
   {
-    valarray<double> a = acceleration(theta, thetadot, t);
-    // TODO Définir les variables dont vous avez besoin et fair le schema numerique
-    theta        = theta;
-    thetadot     = thetadot;
+    valarray<double> a_ = acceleration(theta, thetadot, t);
+    // TODO Définir les variables dont vous avez besoin et faire le schema numerique
+    double theta_old        = theta;
+    double thetadot_old     = thetadot;
 
+    double acc = a_[0] + a_[1];
 
+    theta = theta_old + thetadot_old*dt + 0.5*acc*dt*dt;
+
+    double v_demi = thetadot_old + 0.5*acc*dt;
+
+    valarray<double> acc_demi = acceleration(theta, v_demi, t+0.5*dt);
+    valarray<double> acc_plus1 = acceleration(theta, thetadot, t+dt);
+
+    thetadot += thetadot_old + 0.5*(a_[0] + acc_plus1[0])*dt + acc_demi[1]*dt;
+
+    t += dt;
   }
 
 
