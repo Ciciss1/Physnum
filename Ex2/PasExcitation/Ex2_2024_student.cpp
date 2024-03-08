@@ -106,8 +106,6 @@ private:
     valarray<double> acc_plus1 = acceleration(theta, thetadot, t+dt);
 
     thetadot = thetadot_old + 0.5*(a_[0] + acc_plus1[0])*dt + acc_demi[1]*dt;
-
-    t += dt;
   }
 
 

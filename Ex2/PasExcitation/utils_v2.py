@@ -214,6 +214,11 @@ def set_axis_and_tick_properties(ax,x_label, y_label, xy_fontsize, tick_fontsize
     ax.set_ylabel(y_label, fontsize=xy_fontsize)
     ax.tick_params('both', labelsize = tick_fontsize)
 
+def savefig(fig, filename, ext = "png") :
+    if ext == "pdf" : 
+        fig.savefig("./pdf/" + filename + "." + ext)
+    else : 
+        fig.savefig("./png/" + filename + "." + ext)
 
 def save_png(fig, png_name = "test.png") : 
     fig.savefig("png/" + png_name)
