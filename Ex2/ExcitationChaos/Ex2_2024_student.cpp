@@ -23,7 +23,7 @@ private:
   {
     if((!force && last>=sampling) || (force && last!=1))
     {
-      // TODO Definir l'énergie mécanique et la puissance
+      // Définition de l'énergie mécanique et de la puissance à l'aide des fonctions définies ultérieurement
       double emec = Emec(theta, thetadot, t);
       double pnc = Pnonc(theta, thetadot, t);
 
@@ -36,18 +36,18 @@ private:
     }
   }
 
-    // TODO Définir les fonctions d'accélération a1(x,t) et a2(v,t).
+    // Définition des fonctions d'accélération a_1 et a_2
   valarray<double> acceleration(double theta_, double thetadot_, double t_)
   {
     valarray<double> acc = valarray<double>(2);
 
-    acc[0] = - g*sin(theta_)/length(t_); // accélération dépendant uniquement de x
-    acc[1] = (-2/length(t_))*lendot(t_)*thetadot_ ; // accélération dépendant uniquement de v
+    acc[0] = - g*sin(theta_)/length(t_); // accélération dépendant uniquement de theta
+    acc[1] = (-2/length(t_))*lendot(t_)*thetadot_ ; // accélération dépendant uniquement de la dérivée temporelle de theta
 
     return acc;
   }
 
-  // TODO Définir l'énergie mécanique. 
+  // Définition de l'énergie mécanique à l'aide de fonctions définies ultérieurement
   double Emec(double theta_, double thetadot_, double t_)
   {
     double E;
@@ -55,7 +55,7 @@ private:
     return  E;
   }
 
-    // TODO Définir la puissance des forces non conservatrices 
+    // Définition de la puissance des forces non conservatives à l'aide de fonctions définies ultérieurement
   double Pnonc(double theta_, double thetadot_, double t_)
   {
     double thetadotdot_ = (-g*sin(theta_) - 2 * lendot(t_) * thetadot_)/length(t_);
@@ -63,7 +63,7 @@ private:
     return  P;
   }
 
-  // TODO Définir la longueur du pendule
+  // Définition de la longueur du pendule qui dépend du temps
   double length(double t_)
   {
     double l;
@@ -71,14 +71,14 @@ private:
     return  l;
   }
 
-  // TODO Définir la longueur du pendule
+  // Définition de la première dérivée temporelle de la longueur du pendule
   double lendot(double t_)
   {
     double ldot;
     ldot = alpha + Omega*d*cos(Omega*t_);
     return  ldot;
   }
-  // TODO Définir la dérivée de la longueur du pendule.
+  // Définition de la deuxième dérivée temporelle de la longueur du pendule
   double lendotdot(double t_)
   {
     double ldotdot;
@@ -90,7 +90,7 @@ private:
     void step()
   {
     
-    // TODO Définir les variables dont vous avez besoin et faire le schema numerique
+    // Définition des variables dont on a besoin pour faire le schema numerique
     double theta_old        = theta;
     double thetadot_old     = thetadot;
 
