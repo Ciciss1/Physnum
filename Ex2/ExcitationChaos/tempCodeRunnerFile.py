@@ -1,2 +1,0 @@
-
-Esimul = data[:, 3]
