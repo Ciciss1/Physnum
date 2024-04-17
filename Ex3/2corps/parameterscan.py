@@ -32,14 +32,14 @@ pi=3.1415926535897932384626433832795028841971e0
 dt = 1/nsteps # define it as you need
 
 
-M_earth = 5.972e24
+M_earth = 5.9736e24
 r0 = 6800e3
 r1 = 1.5e9
-G = 6.67430e-11
+G = 6.674e-11
 
 x_final_th = r1
 y_final_th = 0
-Emec_th = - (G*M_earth)/(r1+r0)
+Emec_th = - (G*M_earth)/(r1+r0) 
 
 print(Emec_th)
 
@@ -162,7 +162,7 @@ for i in range(nsimul_ntols):
     
     
 
-ext = "png"    
+ext = "pdf"    
     
     
 rect_xlim = [-0.02e9, 0.02e9]
@@ -215,10 +215,15 @@ ax,fig = u.create_figure_and_apply_format(figsize=(10, 6),xlabel=r"$x$ [m]", yla
 # ax.add_patch(plt.Rectangle((rect_xlim[0], rect_ylim[0]), rect_xlim[1]-rect_xlim[0], rect_ylim[1]-rect_ylim[0], fill=None, edgecolor='black', lw=2, zorder = 15))
 
 
-ax.plot(x_tols, y_tols, linestyle='-', marker = "+" , color='navy')
+ax.plot(x_tols, y_tols, linestyle='-', marker = "+" , color='navy', label=r"RK4 $\Delta t$ adaptatif")
 
-# ax.axis('equal')
+#plot earth
+# ax.scatter(r1,0, s=250, color='red', marker='^', label=r'$r_1$',zorder =15)
+ax.vlines(r1,-4e8,5e8, linestyle='--', color='black', label=r'$x = r_1$')
+
+ax.axis('equal')
 plt.tight_layout()
+u.set_legend_properties(ax, fontsize=18, loc = "upper left")
 u.savefig(fig, "2corps_xy_ntols", ext = ext)
 
 # #plotting the zoomed region
@@ -250,8 +255,8 @@ rect_ylim2 = [-0.05e8, 0.5e8]
 
 #---------------------------------Plot xy zoomed for both methods---------------------------------#
 ax,fig = u.create_figure_and_apply_format(figsize=(10, 8),xlabel=r"$x$ [m]", ylabel=r'$y$ [m]')
-ax.plot(x_tols, y_tols, linestyle='-', marker = "d" ,markersize = 10, color='blue', label = r"RK4 $\Delta t$ adaptatif")
-ax.plot(x_nsteps[:500], y_nsteps[:500], linestyle='-', marker = "^" ,markersize = 10, color='red', label = r"RK4 $\Delta t$ fixe")
+ax.plot(x_tols, y_tols, linestyle='-', marker = "d" ,markersize = 10, color='blue', label = r"RK4 $\Delta t$ adaptatif, Nsteps = " + f"{tols_nsteps[4]}")
+ax.plot(x_nsteps[:500], y_nsteps[:500], linestyle='-', marker = "^" ,markersize = 10, color='red', label = r"RK4 $\Delta t$ fix, Nsteps = " + f"{N}")
 ax.scatter(0, 0, s=250, color='black', marker='o', zorder =15)
 ax.text(0.7e7, 0.2e7, 'Earth', fontsize=18, ha='right', va='bottom', zorder = 15)
 ax.set_xlim(rect_xlim2)
@@ -268,7 +273,7 @@ ax,fig = u.create_figure_and_apply_format(figsize=(10, 6),xlabel=r"$x$ [m]", yla
 for i in [0,1,2,13]:
     ax.plot(Xs_nsteps[i], Ys_nsteps[i], linestyle='-', label = f"Nsteps = {nsteps[i]}")
 
-ax.plot(x_tols, y_tols, linestyle='--', color = "black",label = r"RK4 $\Delta t$ adaptatif")
+ax.plot(x_tols, y_tols, linestyle='--', color = "black",label = r"RK4 $\Delta t$ adaptatif, $N_{steps}$ = " + f"{tols_nsteps[4]}")
 
 # ax.axis('equal')
 plt.tight_layout()
@@ -334,11 +339,11 @@ ax.set_ylim(ylim)
 
 ax.grid(which='both', linestyle='--', linewidth=0.5)
 u.set_legend_properties(ax, fontsize=18)
-u.savefig(fig, "Erreur_position_finale", ext = ext)
+u.savefig(fig, "2corps_Erreur_position_finale", ext = ext)
 
 
 #Emec
-ax,fig = u.create_figure_and_apply_format(figsize=(10, 8),xlabel=r"$N_{steps}$", ylabel=r"Erreur sur l'énergie mécanique [J]")
+ax,fig = u.create_figure_and_apply_format(figsize=(10, 8),xlabel=r"$N_{steps}$", ylabel=r"Erreur sur l'énergie par unité de masse [J/kg]")
 
 ax.loglog(nsteps, Emec_errors_nsteps, linestyle='-' ,marker = "+",  label = r"RK4 $\Delta t$ fixe", color='blue')
 ax.loglog(tols_nsteps, Emec_errors_tols, linestyle='-', marker = "x", label = r"RK4 $\Delta t$ adaptatif" , color='red')
@@ -361,5 +366,5 @@ ax.set_ylim(ylim)
 
 ax.grid(which='both', linestyle='--', linewidth=0.5)
 u.set_legend_properties(ax, fontsize=18)
-u.savefig(fig, "Erreur_Energie", ext = ext)
+u.savefig(fig, "2corps_Erreur_Energie", ext = ext)
 

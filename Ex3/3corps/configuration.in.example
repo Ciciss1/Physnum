@@ -3,7 +3,7 @@ m1 = 1.98892e30
 m2 = 5.9736e24
 r0=6800e3
 r1=1.5e9
-L2x=1.51099098533097e11
+L2x=1.51099098533039886475e+11
 L2y=0
 a = 149598023e3
 nsel_physics = 2
@@ -12,4 +12,5 @@ tol = 30
 sampling = 1 //frequency of data writing
 output = output.out
 nsteps = 3000 
-Omega = 1.9912760582533843e-07
+Omega = 1.99119425021372286641e-07
+

@@ -203,6 +203,7 @@ public:
     //TO DO initialize tFin for nsel_physics=1 and initialize dt for both nsel_physics
     if (nsel_physics==1){
       tFin=pi*sqrt(pow(((r1+r0)/2),3)/(GM*m[1])); //demi periode
+      tFin=tFin; //periode
       cout << tFin;
     }else{
       //2years in second

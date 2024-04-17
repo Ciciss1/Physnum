@@ -30,6 +30,8 @@ private:
   valarray<double> x0 = std::valarray<double>(0.e0, 4); // Correctly initialized
   valarray<double> x  = std::valarray<double>(0.e0, 4); // Correctly initialized
   ofstream *outputFile;
+  // double L4x = ;
+  // double L4y = ;
 
   void printOut(bool write)
   {
@@ -37,7 +39,7 @@ private:
     {
       double Energy = compute_energy(x[0],x[1],x[2],x[3]);
       *outputFile << t << " "<< x[0] << " " << x[1] << " "<< x[2] << " " << x[3] << " " \
-      << Energy<< " "<< nsteps<< endl; // write output on file
+      << Energy<< " " <<  nsteps << " " << get_f(t,x)[2] << " " << get_f(t,x)[3] <<endl; // write output on file
       last = 1;
     }
     else
@@ -126,7 +128,8 @@ double compute_energy(double xx, double yy, double vx, double vy) {
       Ekin = 0.5*norm2(vx, vy);
     }else if (nsel_physics==2)
     {
-      Ekin = 0.5*(norm2(vx,vy) + pow(Omega,2)*norm2(xx,yy) + 2*Omega*(xx*vy - yy*vx));
+      Ekin = 0.5*(norm2(vx,vy) - pow(Omega,2)*norm2(xx,yy));
+      // Ekin = 0.5*norm2(vx,vy);
     }
     
     return Epot + Ekin;
@@ -137,14 +140,16 @@ void initial_condition(void){
     x0[0] = -r0; //x
     x0[1] = 0; //y
     x0[2] = 0; //vx
-    x0[3] = sqrt(2*GM*m[1]*r1/(r0*(r0+r1))); //vy
+    x0[3] = 0; //vy
   }
   else{
     //TO DO initialize x0
     x0[0] = L2x; //x
-    x0[1] = 0; //y              
-    x0[2] = 0; //vx
-    x0[3] = -0.1; //vy
+    // x0[0] = -r0;
+    x0[1] = 0.00000000000000000000; //y              
+    x0[2] = 0.00000000000000000000; //vx
+    x0[3] = -0.10000000000000000000; //vy
+    // x0[3] = sqrt(2*GM*m[1]*r1/(r0*(r0+r1)));
     
   }
 }
