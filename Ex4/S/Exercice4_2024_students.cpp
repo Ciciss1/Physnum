@@ -18,21 +18,26 @@ vector<T>solve(const vector<T>& diag,
       const vector<T>& upper,
       const vector<T>& rhs)
 {
+
     vector<T> solution(diag.size());
     vector<T> new_diag(diag);
     vector<T> new_rhs(rhs);
 
     for (int i = 1; i < diag.size(); ++i) {
+        
         double pivot = lower[i - 1] / new_diag[i - 1];
+        
         new_diag[i] -= pivot * upper[i - 1];
         new_rhs[i] -= pivot * new_rhs[i - 1];
     }
+
 
     solution[diag.size() - 1] =
       new_rhs[diag.size() - 1] / new_diag[diag.size() - 1];
 
     for (int i(diag.size() - 2); i >= 0; --i)
         solution[i] = (new_rhs[i] - upper[i] * solution[i + 1]) / new_diag[i];
+
 
     return solution;
 }
@@ -123,29 +128,41 @@ main(int argc, char* argv[])
     vector<double> rhs(pointCount, 0.0);       // right-hand-side
     
     double C;
+    double rk_demi;
+
     for (int k = 0; k < N; ++k) { 
         // Matrix  and right-hand-side 
         // @TODO insert contributions from interval k 
+        
+        rk_demi = (r[k+1] + r[k])/2;
 
-        C = (h[k]/2)*kappa(h[k]/2)/(kappa(r[k])*h[k+1]);
+        C = (rk_demi)*kappa(rk_demi);
         upper[k]        -= C*(1/h[k]);
         lower[k]        -= C*(1/h[k]);
         diagonal[k]     += C*(1/h[k]); 
         diagonal[k + 1] += C*(1/h[k]);
+        
 
-        rhs[k]     += h[k]*Source(h[k]/2)/2; 
-        rhs[k + 1] += h[k]*Source(h[k]/2)/2;
+        rhs[k]     += h[k]*Source(rk_demi)/2; 
+        rhs[k + 1] += h[k]*Source(rk_demi)/2;
+        
     }
+
+    // cout << "rhs: " << rhs[5] << endl;
+    // cout << "diagonal: " << diagonal[5] << endl;
+    // cout << "upper: " << upper[5] << endl;
+    // cout << "lower: " << lower[5] << endl;
 
     // Boundary conditions @TODO insert boundary conditions
     
-    diagonal[-1] = 1;
-    rhs[-1] = TR;
-    lower[-1] = 0;
+    diagonal[pointCount - 1] = 1;
+    rhs[pointCount - 1] = TR;
+    lower[pointCount - 2] = 0;
 
 
     // Solve the system of equations (do not change the following line!)
     vector<double> temperature = solve(diagonal, lower, upper, rhs);
+
 
     // Calculate heat flux
     vector<double> heatFlux(temperature.size() - 1, 0);
