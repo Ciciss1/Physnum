@@ -13,8 +13,7 @@ using namespace std;
 // Résolution d'un système d'équations linéaires par élimination de
 // Gauss-Jordan:
 template<class T>
-vector<T>
-solve(const vector<T>& diag,
+vector<T>solve(const vector<T>& diag,
       const vector<T>& lower,
       const vector<T>& upper,
       const vector<T>& rhs)
@@ -38,19 +37,33 @@ solve(const vector<T>& diag,
     return solution;
 }
 
+bool IsUniform;
+double R;
+double S0;     
+double r0;     
+double kappa0; 
+double kappaR; 
+double sigma;  
+double alpha;  
+double TR;     
+double N;      
+string fichier_T;    
+string fichier_heat; 
+
 //Definition of kappa
 //Ca ne fait vraiment pas de sens de ne pas passer un double r en argument car le seul r défini est un vecteur 
-double kappa(double r')
+double kappa(double r_)
 {
-    return (kappa0 + (kappaR - kappa0)*(pow((r'/R),2)));
+    return (kappa0 + (kappaR - kappa0)*(pow((r_/R),2)));
 }
 
 //Definition of the source
 // Meme chose ici je ne vois vraiment pas d'autre solution que de passer r en argument
-double Source(double r')
+double Source(double r_)
 {
-    return (S0*exp(-(pow((r'-r0),2)/pow(sigma,2))));
+    return (S0*exp(-(pow((r_-r0),2)/pow(sigma,2))));
 }
+
 
 int
 main(int argc, char* argv[])
@@ -70,18 +83,18 @@ main(int argc, char* argv[])
     const int verbose   = configFile.get<int>("verbose");
     configFile.setVerbosity(verbose);
 
-    const bool IsUniform = configFile.get<bool>("IsUniform");  // Si le maillage est uniforme ou non
-    const double R      = configFile.get<double>("R");      // radius of cylinder
-    const double S0     = configFile.get<double>("S0");     // source parameter
-    const double r0     = configFile.get<double>("r0");     // source parameter
-    const double kappa0 = configFile.get<double>("kappa0"); //conductivity parameter
-    const double kappaR = configFile.get<double>("kappaR"); //conductivity parameter
-    const double sigma  = configFile.get<double>("sigma");  // source parameter
-    const double alpha  = configFile.get<double>("alpha");  // parameter that allows to switch from equidistant in r to equidistant in r^2
-    const double TR     = configFile.get<double>("TR");     // Temperature boundary condition
-    const double N      = configFile.get<int>("N");         // Number of finite element intervals
-    string fichier_T    = configFile.get<string>("output");
-    string fichier_heat = fichier_T+"_heat.out";
+    IsUniform = configFile.get<bool>("IsUniform");  // Si le maillage est uniforme ou non
+    R      = configFile.get<double>("R");      // radius of cylinder
+    S0     = configFile.get<double>("S0");     // source parameter
+    r0     = configFile.get<double>("r0");     // source parameter
+    kappa0 = configFile.get<double>("kappa0"); //conductivity parameter
+    kappaR = configFile.get<double>("kappaR"); //conductivity parameter
+    sigma  = configFile.get<double>("sigma");  // source parameter
+    alpha  = configFile.get<double>("alpha");  // parameter that allows to switch from equidistant in r to equidistant in r^2
+    TR     = configFile.get<double>("TR");     // Temperature boundary condition
+    N      = configFile.get<int>("N");         // Number of finite element intervals
+    fichier_T    = configFile.get<string>("output");
+    fichier_heat = fichier_T+"_heat.out";
 
     // Create our finite elements
     const int pointCount =  N + 1; // Number of grid points
@@ -92,10 +105,10 @@ main(int argc, char* argv[])
     vector<double> r(pointCount);
     if(IsUniform == true){
           for (int i = 0; i < N + 1; ++i)
-                  r[i] = (i/static_cast<double>(N))*R;
+            r[i] = (i/static_cast<double>(N))*R;
     }else{
           for(int i = 0; i < N+1 ; ++i)
-                r[i] = sqrt(i/static_cast<double>(N))*R ; 
+            r[i] = sqrt(i/static_cast<double>(N))*R ; 
     };
       
     // Distance between elements 
@@ -109,20 +122,26 @@ main(int argc, char* argv[])
     vector<double> upper(pointCount - 1, 0.0); // Upper diagonal
     vector<double> rhs(pointCount, 0.0);       // right-hand-side
     
+    double C;
     for (int k = 0; k < N; ++k) { 
         // Matrix  and right-hand-side 
         // @TODO insert contributions from interval k 
 
-        upper[k]        += 0.0;
-        lower[k]        += 0.0;
-        diagonal[k]     += 1.0; 
-        diagonal[k + 1] += 1.0;
+        C = (h[k]/2)*kappa(h[k]/2)/(kappa(r[k])*h[k+1]);
+        upper[k]        -= C*(1/h[k]);
+        lower[k]        -= C*(1/h[k]);
+        diagonal[k]     += C*(1/h[k]); 
+        diagonal[k + 1] += C*(1/h[k]);
 
-        rhs[k]     += h[k]*S((r[k+1] - r[k])/2)/2; 
-        rhs[k + 1] += h[k]*S((r[k+1]-r[k])/2)/2;
+        rhs[k]     += h[k]*Source(h[k]/2)/2; 
+        rhs[k + 1] += h[k]*Source(h[k]/2)/2;
     }
 
     // Boundary conditions @TODO insert boundary conditions
+    
+    diagonal[-1] = 1;
+    rhs[-1] = TR;
+    lower[-1] = 0;
 
 
     // Solve the system of equations (do not change the following line!)
@@ -132,7 +151,8 @@ main(int argc, char* argv[])
     vector<double> heatFlux(temperature.size() - 1, 0);
     for (int i = 0; i < heatFlux.size(); ++i) {
         //@TODO compute heat flux at mid intervals, use finite element representation
-        heatFlux[i]         = 0.0;
+        //pas sur du tout
+        heatFlux[i] = -kappa((r[i] + r[i+1])/2)*(temperature[i+1] - temperature[i])/(r[i+1] - r[i]);
     }
 
     // Export data
