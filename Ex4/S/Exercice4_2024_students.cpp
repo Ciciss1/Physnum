@@ -38,16 +38,18 @@ solve(const vector<T>& diag,
     return solution;
 }
 
-//@TODO code kappa
-double kappa()
+//Definition of kappa
+//Ca ne fait vraiment pas de sens de ne pas passer un double r en argument car le seul r défini est un vecteur 
+double kappa(double r')
 {
-    return 0.0;
+    return (kappa0 + (kappaR - kappa0)*(pow((r'/R),2)));
 }
 
-//@TODO code Source
-double Source()
+//Definition of the source
+// Meme chose ici je ne vois vraiment pas d'autre solution que de passer r en argument
+double Source(double r')
 {
-    return 0.0;
+    return (S0*exp(-(pow((r'-r0),2)/pow(sigma,2))));
 }
 
 int
@@ -68,6 +70,7 @@ main(int argc, char* argv[])
     const int verbose   = configFile.get<int>("verbose");
     configFile.setVerbosity(verbose);
 
+    const bool IsUniform = configFile.get<bool>("IsUniform");  // Si le maillage est uniforme ou non
     const double R      = configFile.get<double>("R");      // radius of cylinder
     const double S0     = configFile.get<double>("S0");     // source parameter
     const double r0     = configFile.get<double>("r0");     // source parameter
@@ -84,14 +87,21 @@ main(int argc, char* argv[])
     const int pointCount =  N + 1; // Number of grid points
 
     // Position of elements @TODO code r[i]
+    // Donc ici j'ai décidé de faire une disjonction de cas pour le maillage uniforme et le maillage non uniforme grâce à une variable 
+    // "uniforme" de type bool qu'il faut récupérer de notre configuratio.in, A VERIFIER si il est capable de faire ça
     vector<double> r(pointCount);
-    for (int i = 0; i < N + 1; ++i)
-        r[i] = 1.0;
-
-    // Distance between elements @TODO code h[i]
+    if(IsUniform == true){
+          for (int i = 0; i < N + 1; ++i)
+                  r[i] = (i/static_cast<double>(N))*R;
+    }else{
+          for(int i = 0; i < N+1 ; ++i)
+                r[i] = sqrt(i/static_cast<double>(N))*R ; 
+    };
+      
+    // Distance between elements 
     vector<double> h(pointCount - 1);
     for (int i = 0; i < h.size(); ++i)
-        h[i] = 1.0;
+        h[i] = r[i+1] - r[i];
 
     // Construct the matrices
     vector<double> diagonal(pointCount, 0.0);  // Diagonal
@@ -108,8 +118,8 @@ main(int argc, char* argv[])
         diagonal[k]     += 1.0; 
         diagonal[k + 1] += 1.0;
 
-        rhs[k]     += 1.0; 
-        rhs[k + 1] += 1.0;
+        rhs[k]     += h[k]*S((r[k+1] - r[k])/2)/2; 
+        rhs[k + 1] += h[k]*S((r[k+1]-r[k])/2)/2;
     }
 
     // Boundary conditions @TODO insert boundary conditions
