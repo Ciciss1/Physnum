@@ -10,7 +10,7 @@ nsel_physics = 2
 adapt = false
 tol = 30
 sampling = 1 //frequency of data writing
-output = output.out
+output = output
 nsteps = 3000 
 Omega = 1.99119425021372286641e-07
 

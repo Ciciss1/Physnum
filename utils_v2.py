@@ -37,7 +37,8 @@ dark_yellow = convert_RGB_01(184.0,156.0,61.0)
 
 
 
-def zoom_in_plot(ax,x,y,xlim,ylim,x_zoom,y_zoom, color,multiply = 2, linewidth = 2, title = "", ticks = False) :
+def zoom_in_plot(ax,X,Y,xlim,ylim,x_zoom,y_zoom, colors,markers,linesytles,corner1 = ["top","top"],corner2 = ["top","top"],multiply = 2, linewidth = 2, title = "", ticks = False) :
+    N = len(X)
     x_range = abs(ax.get_xlim()[1] - ax.get_xlim()[0])
     y_range = abs(ax.get_ylim()[1] - ax.get_ylim()[0])
     
@@ -46,14 +47,22 @@ def zoom_in_plot(ax,x,y,xlim,ylim,x_zoom,y_zoom, color,multiply = 2, linewidth =
 
     x_zoom_top_left_corner = ax.get_xlim()[0] + x_zoom*x_range 
     y_zoom_top_left_corner = ax.get_ylim()[0] + y_zoom*y_range  + y_range * height_zoom
+    
     x_zoom_low_right_corner = ax.get_xlim()[0] + x_zoom*x_range  + x_range * width_zoom
     y_zoom_low_right_corner = ax.get_ylim()[0] + y_zoom*y_range 
-
+    
+    x_zoom_top_right_corner = ax.get_xlim()[0] + x_zoom*x_range  + x_range * width_zoom
+    y_zoom_top_right_corner = ax.get_ylim()[0] + y_zoom*y_range  + y_range * height_zoom
+    
+    x_zoom_low_left_corner = ax.get_xlim()[0] + x_zoom*x_range
+    y_zoom_low_left_corner = ax.get_ylim()[0] + y_zoom*y_range
 
 
 
     axin = ax.inset_axes([x_zoom, y_zoom, width_zoom, height_zoom])  # [x, y, width, height]
-    axin.plot(x, y, color = color)
+    for i in range(N) :
+        axin.plot(X[i], Y[i], color = colors[i], linestyle = linesytles[i], marker = markers[i])
+    axin.grid()
     axin.set_xlim(xlim[0], xlim[1])
     axin.set_ylim(ylim[0], ylim[1])
     
@@ -69,10 +78,43 @@ def zoom_in_plot(ax,x,y,xlim,ylim,x_zoom,y_zoom, color,multiply = 2, linewidth =
     # Add an arrow annotation from the center of the rectangle to the zoomed plot
     arrow_props = dict(arrowstyle="-", color='black',zorder=10) 
     
-    arrow = ConnectionPatch((xlim[0], ylim[1]), (x_zoom_top_left_corner, y_zoom_top_left_corner), "data", "data", **arrow_props)
+    if corner1[0] == "top" :
+        x1 = x_zoom_top_left_corner
+        y1 = y_zoom_top_left_corner
+    else :
+        x1 = x_zoom_low_left_corner
+        y1 = y_zoom_low_left_corner
+
+    if corner1[1] == "top" :
+        x2 = x_zoom_top_right_corner
+        y2 = y_zoom_top_right_corner
+    else :
+        x2 = x_zoom_low_right_corner
+        y2 = y_zoom_low_right_corner
+
+        
+        
+    if corner2[0] == "top" :
+        xx1 = xlim[0]
+        yy1 = ylim[1]
+    else :
+        xx1 = xlim[0]
+        yy1 = ylim[0]
+        
+    if corner2[1] == "top" :
+        xx2 = xlim[1]
+        yy2 = ylim[1]
+    else :
+        xx2 = xlim[1]
+        yy2 = ylim[0]
+        
+        
+        
+        
+    arrow = ConnectionPatch((xx1, yy1), (x1, y1), "data", "data", **arrow_props)
     ax.add_artist(arrow)
 
-    arrow = ConnectionPatch((xlim[1], ylim[0]), (x_zoom_low_right_corner,y_zoom_low_right_corner), "data", "data", **arrow_props)
+    arrow = ConnectionPatch((xx2, yy2), (x2, y2), "data", "data", **arrow_props)
     ax.add_artist(arrow)
     
     

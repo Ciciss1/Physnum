@@ -1,0 +1,15 @@
+% Physique:
+R=0.05
+sigma=0.005
+S0=1000
+r0 = 0.03
+kappaR=0.00001
+kappa0=0.001
+TR=293
+alpha = 2 
+% Numérique:
+N=100
+output=output
+% Set to 0 to reduce printouts
+verbose=1 
+IsUniform=true
