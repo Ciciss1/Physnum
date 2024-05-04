@@ -191,30 +191,40 @@ int main(int argc, char* argv[])
 	vel2[i] = g*h0[i] ; 
   };
 
-  auto max_vel2 = std::max_element(vel2.begin(), vel2.end());
-
+  auto max_vel2_iter = std::max_element(vel2.begin(), vel2.end());
+  double max_vel2 = *max_vel2_iter;
 
   // LUIZA : Définition de dt avec le CFL 
   // Ici ce que j'ai fait c'est définir la norme de la vitesse u, par rapport à la vitesse au carré vel2
   // pour définir dt avec le CFL, comme demandé dans le code initial. 
   // Je vois pas trop d'autres moyens
-  // NIL : OK
-  double somme(0);
-  double norme_u(0) ;  
-  for(int i(0); i<N; ++i){
-	somme += vel2[i] ;
-  }
-  norme_u = sqrt(somme) ;
-  dt = CFL*dx/norme_u ; 
+  // NIL : pas OK, j'ai retema l'énoncé et en fait faut définir dt avec le CFL et max_vel2
+
+  // ton code
+  // double somme(0); 
+  // double norme_u(0) ; 
+  // for(int i(0); i<N; ++i){
+	// somme += vel2[i] ;
+  // }
+  // norme_u = sqrt(somme) ;
+
+  // mon code
+  //ici on veut que dt soit tel que max(beta_CFL) = 1, donc on a dt = dx/sqrt(max_vel2) 
+  dt = dx/sqrt(max_vel2) ; 
   
   // LUIZA : définition de dt et CLF quand on veut fixer le nombre de nsteps 
   // J'ai fait la même chose que juste au dessus mais dans le sens inverse. 
   // NIL : PAS OK, voir commentaire ci-dessous
   if(impose_nsteps){ 
-    // dt  = tfin/N; je pense que c'est faux, sachant que dt dépend de nsteps et pas de N (N c'est pour le dx)
     dt = tfin/nsteps; // je propse ça plutôt
-    CFL = norme_u * dt / dx;
+    // CFL = max_vel2 * dt / dx; // pas nécessaire, jsp a quoi sert le paramètre CFL enft
   }
+
+
+  if (equation_type=="Eq1"){
+    
+  }
+  
 
   // Fichiers de sortie :
   string output = configFile.get<string>("output");
@@ -265,9 +275,10 @@ int main(int argc, char* argv[])
 		int i_minus((x[i] - sqrt(vel2[i])*dt - xL)/dx);
 		fpast[i] = fnow[i_minus] ;
 	};
-  // NIL : pour moi c'est juste, pourquoi il y aurait un pb selon toi?
-	beta2[i]= pow((sqrt(vel2[i])*dt/dx), 2); // A REVOIR
-};
+  //NIL : j'ai changé
+  beta2[i] = pow((sqrt(vel2[i])*dt/dx), 2);
+  
+  };
 	
 
   cout<<"beta2[0] is "<<beta2[0]<<endl;
@@ -290,7 +301,14 @@ int main(int argc, char* argv[])
       // LUIZA : Ecriture de l'expression pour fnext 
       // Fait avec l'expression des notes du cours
       // NIL : OK
-      fnext[i] = 2*(1 - beta2[i])*fnow[i] - fpast[i] + beta2[i]*(fnow[i+1] + fnow[i-1]);
+      if (equation_type == "Eq1")
+      {
+        fnext[i] = 2*(1 - beta2[i])*fnow[i] - fpast[i] + beta2[i]*(fnow[i+1] + fnow[i-1]);
+      }
+      else if (equation_type == "Eq2")
+      {
+        fnext[i] = 2*(1 - beta2[i])*fnow[i] - fpast[i] + (beta2[i+1] + beta2[i] - beta2[i-1])*(fnow[i+1] + fnow[i-1]);
+      }
     }
 
     //Application des conditions au bord : 
