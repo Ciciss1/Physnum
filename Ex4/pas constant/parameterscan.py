@@ -438,6 +438,7 @@ for i in range(nsimul_Ns):
     errors_T0_nonuniform[i] = error_T0
     errors_heat_R_nonuniform[i] = error_heat_R
     
+
     
 #plot error T0
 ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$\frac{1}{N}$", ylabel=r'$|T(0)-T(0)_{fit}|$ [K]', grid_bool = False)

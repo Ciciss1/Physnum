@@ -18,28 +18,35 @@ void boundary_condition(vector<double> &fnext, vector<double> &fnow, double cons
 		vector<double> &beta2, string &bc_l, string &bc_r, int &N)
 {
   // Condition au bord gauche : 
+  // NIL : OK
 	if(bc_l == "fixe"){
 		fnext[0] = fnow[0] ;
 	};
+  // NIL : OK
 	if( bc_l == "libre"){
 		fnext[0] = fnext[1] ;  
 	}; 
+  // NIL : t'as fait les calculs pour obtenir ça ? je te fais confiance
 	if(bc_l == "sortie"){
 		fnext[0] = fnow[0] - sqrt(beta2[0])*(fnow[0] - fnow[1]) ; 
 	};
 	//Condition au bord droit
+  // NIL : OK
 	if(bc_r == "fixe"){
 		fnext[N] = fnow[N] ; 
 	};
+  // NIL : OK
 	if(bc_r == "libre"){
 		fnext[N] = fnext[N-1]; 
 	};
+  //NIL : OK
 	if(bc_r == "sortie"){
 		fnext[N] = fnow[N] - sqrt(beta2[N]) *(fnow[N] - fnow[N-1]) ;
 	}
 }
 
 // LUIZA : Définition des modes propres : 
+// NIL : OK
 double finit(double x, double xL, double n_init, double xR)
 {
   double finit_(0.0);
@@ -138,6 +145,7 @@ int main(int argc, char* argv[])
   
 // LUIZA : définition des positions des points de maillage
 // Ca n'a pas été fait dans le code, or on en a vraiment besoin donc je l'ai fait 
+// NIL : OK
   x[0] = xL ; 
   for(int i(1); i<N; ++i){
 	  x[i] = x[i-1] + dx ; 
@@ -148,6 +156,7 @@ int main(int argc, char* argv[])
 // entre x_a et x_b, entre x_b et x_c etc... Donc sous le conseil plus que douteux d'un assistant
 // j'ai traduit ces conditions sur x par des conditions sur les indices, un peu d'algèbre et on trouve 
 // que x_a correspond à l'indice a comme défini ici (dans un maillage uniforme) : 
+// NIL : flemme de faire les calculs je te fais confiance
   int a((xa - xL)/dx); // indice correspondant à xa
   int b((xb - xL)/dx); // indice correspondant à xb
   int c((xc - xL)/dx); // indice correspondant à xc
@@ -157,6 +166,7 @@ int main(int argc, char* argv[])
  
 // LUIZA : Initialisation de la profondeur h0 et de la vitesse au carré vel2
 // ici j'ai utilisé la théorie du cours et de l'énoncé
+// NIL : OK
   for(int i(0); i<N; ++i){ 
     if(v_uniform){
 		h0[i] = h00 ;  
@@ -177,6 +187,7 @@ int main(int argc, char* argv[])
 			h0[i] = hR ; 
 		};
 	};
+  //NIL : OK
 	vel2[i] = g*h0[i] ; 
   };
 
@@ -187,6 +198,7 @@ int main(int argc, char* argv[])
   // Ici ce que j'ai fait c'est définir la norme de la vitesse u, par rapport à la vitesse au carré vel2
   // pour définir dt avec le CFL, comme demandé dans le code initial. 
   // Je vois pas trop d'autres moyens
+  // NIL : OK
   double somme(0);
   double norme_u(0) ;  
   for(int i(0); i<N; ++i){
@@ -197,8 +209,10 @@ int main(int argc, char* argv[])
   
   // LUIZA : définition de dt et CLF quand on veut fixer le nombre de nsteps 
   // J'ai fait la même chose que juste au dessus mais dans le sens inverse. 
+  // NIL : PAS OK, voir commentaire ci-dessous
   if(impose_nsteps){ 
-    dt  = tfin/N;
+    // dt  = tfin/N; je pense que c'est faux, sachant que dt dépend de nsteps et pas de N (N c'est pour le dx)
+    dt = tfin/nsteps; // je propse ça plutôt
     CFL = norme_u * dt / dx;
   }
 
@@ -221,6 +235,8 @@ int main(int argc, char* argv[])
   // ATTENTION : J'ai fait les conditions avec les noms en input en anglais
   // PROBLEME : Initialization de beta2 qui fait pas beaucoup de sens, a revoir
   for(int i(0); i<N; ++i) {
+  // NIL : OK
+  //Forme initiale de la vague
 	if(initialization == "mode"){ //Initialisation avec les modes propres
 		fnow[i] = finit(x[i], xL, n_init, xR) ; 
 	}else{						// Initialisation avec l'equation (4) 
@@ -234,17 +250,22 @@ int main(int argc, char* argv[])
 			fnow[i] = 0 ; 
 		};
 	}
+  // NIL : OK
+  //mode de propagation initial de la vague
 	if(initial_state == "static"){ //Onde initialement au repos
 		fpast[i] = fnow[i] ; 
 	};
 	if(initial_state == "right"){ // Onde se propageant vers la droite
+    // NIL : j'ai pas fait les calculs pour i_u je te fais confiance
 		int i_u((x[i] + sqrt(vel2[i])*dt - xL)/dx) ; 
 		fpast[i] = fnow[i_u] ; 
 	};
 	if(initial_state == "left"){ // Onde se propageant vers la gauche
+    // NIL : j'ai pas fait les calculs pour i_minus je te fais confiance
 		int i_minus((x[i] - sqrt(vel2[i])*dt - xL)/dx);
 		fpast[i] = fnow[i_minus] ;
 	};
+  // NIL : pour moi c'est juste, pourquoi il y aurait un pb selon toi?
 	beta2[i]= pow((sqrt(vel2[i])*dt/dx), 2); // A REVOIR
 };
 	
@@ -268,6 +289,7 @@ int main(int argc, char* argv[])
     {
       // LUIZA : Ecriture de l'expression pour fnext 
       // Fait avec l'expression des notes du cours
+      // NIL : OK
       fnext[i] = 2*(1 - beta2[i])*fnow[i] - fpast[i] + beta2[i]*(fnow[i+1] + fnow[i-1]);
     }
 
@@ -275,6 +297,7 @@ int main(int argc, char* argv[])
     boundary_condition(fnext, fnow, A, t, dt, beta2, bc_l, bc_r, N);
 
     //LUIZA : Mise à jour
+    // NIL : OK
     fpast = fnow ;
     fnow  = fnext ;
   }
