@@ -9,22 +9,42 @@
 
 using namespace std;
 
-
-
-
+//LUIZA : Définition des conditions au bord : 
+//Les conditions étaient sur x_1 et x_2, ainsi que x_{Nx} et x_{Nx -1}, je suis partie du principe que x_1 
+// correspondait à l'indice 0, x_2 à l'indice 1, x_{Nx} à l'indice N et x_{Nx-1} à l'indice N-1
+// Pour beta, comme c'est un vecteur de beta 2 je suis partie du principe que le beta utilisé dans la théorie c'était beta[i]
 void boundary_condition(vector<double> &fnext, vector<double> &fnow, double const& A, \
 		double const& t,double const& dt, \
 		vector<double> &beta2, string &bc_l, string &bc_r, int &N)
 {
-  // TODO: Insert boundary conditions
+  // Condition au bord gauche : 
+	if(bc_l == "fixe"){
+		fnext[0] = fnow[0] ;
+	};
+	if( bc_l == "libre"){
+		fnext[0] = fnext[1] ;  
+	}; 
+	if(bc_l == "sortie"){
+		fnext[0] = fnow[0] - sqrt(beta2[0])*(fnow[0] - fnow[1]) ; 
+	};
+	//Condition au bord droit
+	if(bc_r == "fixe"){
+		fnext[N] = fnow[N] ; 
+	};
+	if(bc_r == "libre"){
+		fnext[N] = fnext[N-1]; 
+	};
+	if(bc_r == "sortie"){
+		fnext[N] = fnow[N] - sqrt(beta2[N]) *(fnow[N] - fnow[N-1]) ;
+	}
 }
 
-
+// LUIZA : Définition des modes propres : 
 double finit(double x, double xL, double n_init, double xR)
 {
-  double finit_(0.);
+  double finit_(0.0);
   const double PI = 3.1415926535897932384626433832795028841971e0;
-  // TOTO initialiser un mode propre
+  finit_ = sin(((n_init*PI)/(xR - xL))*x) ; 
   return finit_;
 }
 
@@ -94,7 +114,7 @@ int main(int argc, char* argv[])
   string initialization = configFile.get<string>("initialization"); 
 
 // Onde partant initialement vers la gauche ou vers la droite ou statique
-// (par exemple 'gauche', 'droite', 'statique')
+// (par exemple 'left', 'right', 'static')
   string initial_state = configFile.get<string>("initial_state");
 
 // Selecteur pour le cas h0 uniforme:
@@ -115,20 +135,71 @@ int main(int argc, char* argv[])
 
  // Eq.(1) ou Eq.(2) [ou Eq.(6) (facultatif)]: Eq1, Eq2 ou Eq6
   string equation_type = configFile.get<string>("equation_type");  
+  
+// LUIZA : définition des positions des points de maillage
+// Ca n'a pas été fait dans le code, or on en a vraiment besoin donc je l'ai fait 
+  x[0] = xL ; 
+  for(int i(1); i<N; ++i){
+	  x[i] = x[i-1] + dx ; 
+  };
 
+// LUIZA : Initialisation des indices : 
+// Donc ici le principe est qu'on a beaucoup de conditions pour les initialisations sur les x : 
+// entre x_a et x_b, entre x_b et x_c etc... Donc sous le conseil plus que douteux d'un assistant
+// j'ai traduit ces conditions sur x par des conditions sur les indices, un peu d'algèbre et on trouve 
+// que x_a correspond à l'indice a comme défini ici (dans un maillage uniforme) : 
+  int a((xa - xL)/dx); // indice correspondant à xa
+  int b((xb - xL)/dx); // indice correspondant à xb
+  int c((xc - xL)/dx); // indice correspondant à xc
+  int d((xd - xL)/dx); // indice correspondant à xd
+  int i_1((x1 - xL)/dx) ; //indice correspondant à x1 
+  int i_2 ((x2 - xL)/dx); //indice correspondant à x2 
+ 
+// LUIZA : Initialisation de la profondeur h0 et de la vitesse au carré vel2
+// ici j'ai utilisé la théorie du cours et de l'énoncé
   for(int i(0); i<N; ++i){ 
-    // TODO initialize the depth h0 and the velocity^2 vel2
-  }
+    if(v_uniform){
+		h0[i] = h00 ;  
+	}else{
+		if((i <= 0) and (i <= a)){
+			h0[i] = hL ;
+		};
+		if((i > a) and (i < b)){
+			h0[i] = 0.5*(hL + hC) + 0.5*(hL - hC)*cos(PI*((x[i]-xa)/(xb -xa))) ; 
+		};
+		if((i >= b) and (i <= c)){
+			h0[i] = hC ; 
+		};
+		if((i > c) and (i < d)){
+			h0[i] = 0.5*(hR + hC) - 0.5*(hR - hC)*cos(PI*((x[i]-xc)/(xd - xc))) ; 
+		};
+		if( (i>d) and (i<N)){
+			h0[i] = hR ; 
+		};
+	};
+	vel2[i] = g*h0[i] ; 
+  };
 
   auto max_vel2 = std::max_element(vel2.begin(), vel2.end());
 
-  // TODO
-  // define the dt according to CLF input 
-  dt = 1; 
-  if(impose_nsteps){
-    // define the dt and CLF when you want to fix nsteps
-    dt  = 1;
-    CFL = 1;
+
+  // LUIZA : Définition de dt avec le CFL 
+  // Ici ce que j'ai fait c'est définir la norme de la vitesse u, par rapport à la vitesse au carré vel2
+  // pour définir dt avec le CFL, comme demandé dans le code initial. 
+  // Je vois pas trop d'autres moyens
+  double somme(0);
+  double norme_u(0) ;  
+  for(int i(0); i<N; ++i){
+	somme += vel2[i] ;
+  }
+  norme_u = sqrt(somme) ;
+  dt = CFL*dx/norme_u ; 
+  
+  // LUIZA : définition de dt et CLF quand on veut fixer le nombre de nsteps 
+  // J'ai fait la même chose que juste au dessus mais dans le sens inverse. 
+  if(impose_nsteps){ 
+    dt  = tfin/N;
+    CFL = norme_u * dt / dx;
   }
 
   // Fichiers de sortie :
@@ -146,16 +217,37 @@ int main(int argc, char* argv[])
 
   // Initialisation des tableaux du schema numerique :
 
-  //TODO initialize f and beta^2
-  for(int i(0); i<N; ++i)
-  {
-    fpast[i] = 0.;
-    fnow[i]  = 0.;
-    beta2[i] = 1.0;
-
-    // TODO initialize beta2, fnow and fpast according to the requests
-  }
-
+  //LUIZA : Initialization de fnow et fpast : 
+  // ATTENTION : J'ai fait les conditions avec les noms en input en anglais
+  // PROBLEME : Initialization de beta2 qui fait pas beaucoup de sens, a revoir
+  for(int i(0); i<N; ++i) {
+	if(initialization == "mode"){ //Initialisation avec les modes propres
+		fnow[i] = finit(x[i], xL, n_init, xR) ; 
+	}else{						// Initialisation avec l'equation (4) 
+		if(i <= i_1){
+			fnow[i] = 0;
+		};
+		if((i > i_1) and (i < i_2)){
+			fnow[i] = (A / 2)*(1 - cos(2*PI*(x[i]-x1)/(x2-x1)));
+		};
+		if((i>=i_2) and (i<N)){
+			fnow[i] = 0 ; 
+		};
+	}
+	if(initial_state == "static"){ //Onde initialement au repos
+		fpast[i] = fnow[i] ; 
+	};
+	if(initial_state == "right"){ // Onde se propageant vers la droite
+		int i_u((x[i] + sqrt(vel2[i])*dt - xL)/dx) ; 
+		fpast[i] = fnow[i_u] ; 
+	};
+	if(initial_state == "left"){ // Onde se propageant vers la gauche
+		int i_minus((x[i] - sqrt(vel2[i])*dt - xL)/dx);
+		fpast[i] = fnow[i_minus] ;
+	};
+	beta2[i]= pow((sqrt(vel2[i])*dt/dx), 2); // A REVOIR
+};
+	
 
   cout<<"beta2[0] is "<<beta2[0]<<endl;
   cout<<"dt is "<< dt <<endl;
@@ -174,16 +266,17 @@ int main(int argc, char* argv[])
     // Evolution :
     for(int i(1); i<N-1; ++i)
     {
-      // TODO: write the expressions for fnext 
-      fnext[i] = 0.0;
+      // LUIZA : Ecriture de l'expression pour fnext 
+      // Fait avec l'expression des notes du cours
+      fnext[i] = 2*(1 - beta2[i])*fnow[i] - fpast[i] + beta2[i]*(fnow[i+1] + fnow[i-1]);
     }
 
-    // TODO add boundary conditions
+    //Application des conditions au bord : 
     boundary_condition(fnext, fnow, A, t, dt, beta2, bc_l, bc_r, N);
 
-    //TODO: faire la mise a jour :
-    // fpast = something ;
-    // fnow  = something ;
+    //LUIZA : Mise à jour
+    fpast = fnow ;
+    fnow  = fnext ;
   }
 
   if(ecrire_f) fichier_f << t << " " << fnow << endl;
