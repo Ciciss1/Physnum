@@ -188,19 +188,20 @@ int main(int argc, char* argv[])
 		h0[i] = h00 ;  
 	}else{
     //NIL : il suffit d evaluer en x[i] enft, donc pas besoin d indices
-		if((x[i] >= 0) and (x[i] <= xa)){
+    //Alexis: J'ai changé les and et des conditions
+		if((x[i] >= xL) && (x[i] <= xa)){
 			h0[i] = hL ;
 		};
-		if((x[i] > xa) and (x[i] < xb)){
+		if((x[i] > xa) && (x[i] < xb)){
 			h0[i] = 0.5*(hL + hC) + 0.5*(hL - hC)*cos(PI*((x[i]-xa)/(xb -xa))) ; 
 		};
-		if((x[i] >= xb) and (x[i] <= xc)){
+		if((x[i] >= xb) && (x[i] <= xc)){
 			h0[i] = hC ; 
 		};
-		if((x[i] > xc) and (x[i] < xd)){
+		if((x[i] > xc) && (x[i] < xd)){
 			h0[i] = 0.5*(hR + hC) - 0.5*(hR - hC)*cos(PI*((x[i]-xc)/(xd - xc))) ; 
 		};
-		if( x[i]>xd){
+		if( x[i] >= xd) && (x[i] <= xR){
 			h0[i] = hR ; 
 		};
 	};
