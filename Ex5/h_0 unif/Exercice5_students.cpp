@@ -201,7 +201,7 @@ int main(int argc, char* argv[])
 		if((x[i] > xc) && (x[i] < xd)){
 			h0[i] = 0.5*(hR + hC) - 0.5*(hR - hC)*cos(PI*((x[i]-xc)/(xd - xc))) ; 
 		};
-		if( x[i] >= xd) && (x[i] <= xR){
+		if((x[i] >= xd) && (x[i] <= xR)){
 			h0[i] = hR ; 
 		};
 	};
