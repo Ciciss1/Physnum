@@ -328,8 +328,10 @@ int main(int argc, char* argv[])
       }
       else if (equation_type == "Eq2")
       {
+        fnext[i] = 2*(1 - beta2[i])*fnow[i] - fpast[i] + beta2[i]*(fnow[i+1] + fnow[i-1]) + 0.25*(beta2[i+1] - beta2[i-1])*(fnow[i+1] - fnow[i-1]);
+
         // cout << "Eq2" << endl;
-        fnext[i] = 2*(1 - beta2[i])*fnow[i] - fpast[i] + (beta2[i+1]/4 + beta2[i] - beta2[i-1]/4)*(fnow[i+1] + fnow[i-1]);
+        // fnext[i] = 2*(1 - beta2[i])*fnow[i] - fpast[i] + (beta2[i+1]/4 + beta2[i] - beta2[i-1]/4)*(fnow[i+1] + fnow[i-1]);
         // cout << "fnext[i] = " << fnext[i] << endl;
         // if (t==0.)
         // {
@@ -344,8 +346,8 @@ int main(int argc, char* argv[])
 
     //LUIZA : Mise à jour
     // NIL : OK
-    fpast = fnow ;
-    fnow  = fnext ;
+    fpast = fnow;
+    fnow  = fnext;
   }
 
   if(ecrire_f) fichier_f << t << " " << fnow << endl;
