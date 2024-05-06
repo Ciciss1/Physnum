@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
 // Ca n'a pas été fait dans le code, or on en a vraiment besoin donc je l'ai fait 
 // NIL : OK
   x[0] = xL ; 
-  for(int i(1); i<N; ++i){
+  for(int i(1); i<=N; ++i){
 	  x[i] = x[i-1] + dx ; 
   };
 
