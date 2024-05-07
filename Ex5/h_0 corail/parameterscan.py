@@ -38,7 +38,7 @@ A = 1
 x1 = 50e3
 x2 = 250e3
 
-equation_type="Eq2"
+equation_type="Eq1"
 nx=1000
 n_init=3
 initialization="pas mode"
@@ -117,6 +117,20 @@ for i in range(N):
     
 h0=-h0
 
+#plot le profil de hauteur
+ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$x$ [m]", ylabel=r'h [m]')
+
+ax.plot(x,h0, label=f"t = {t[0]:.2f} s", color="black")
+
+plt.tight_layout()
+u.set_legend_properties(ax, fontsize=18,ncol=2)
+u.savefig(fig, "profil_h0", ext = ext)
+
+
+
+
+
+
 
 
 #animate
@@ -128,8 +142,8 @@ line2, = ax.plot([], [], color="black", linestyle="--")
 # Définition de la fonction d'initialisation de l'animation
 def init():
     ax.set_xlim(xL, xR)
-    # ax.set_ylim(-1, np.max(data[:, 1:]))
-    ax.set_ylim(-1,1)
+    ax.set_ylim(-4, 4)
+    # ax.set_ylim(-1,1)
     return line,
 
 # Fonction d'animation
@@ -139,6 +153,7 @@ def animate(i):
     ax.set_title(f"t = {t[i]:.2f} s")
     return line,
 
+#------animate-------
 # Création de l'animation
 ani = FuncAnimation(fig, animate, frames=len(data), init_func=init, blit=True, interval=40)
 
@@ -148,11 +163,7 @@ ani.save("simulation_vagues.gif", writer='pillow')
 FFwriter=animation.FFMpegWriter(fps=1000/40, extra_args=['-vcodec', 'libx264'])
 ani.save("simulation_vagues.mp4", writer=FFwriter)
 
-# ani.save("simulation_vagues.mp4", writer='ffmpeg')
 
-
-# Affichage de l'animation
-plt.show()
 
 
     

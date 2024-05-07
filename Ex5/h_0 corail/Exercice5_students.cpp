@@ -189,7 +189,7 @@ int main(int argc, char* argv[])
 	}else{
     //NIL : il suffit d evaluer en x[i] enft, donc pas besoin d indices
     //Alexis: J'ai changé les and et des conditions
-		if((x[i] >= xL) && (x[i] <= xa)){
+    if((x[i] >= xL) && (x[i] <= xa)){
 			h0[i] = hL ;
 		};
 		if((x[i] > xa) && (x[i] < xb)){
@@ -201,9 +201,11 @@ int main(int argc, char* argv[])
 		if((x[i] > xc) && (x[i] < xd)){
 			h0[i] = 0.5*(hR + hC) - 0.5*(hR - hC)*cos(PI*((x[i]-xc)/(xd - xc))) ; 
 		};
-		if((x[i] >= xd) && (x[i] <= xR)){
+		if((x[i] >= xd) && (x[i] <= xR)){ //si on change (x[i] >= xd) en (x[i] > xd), la vague est réfléchie sur la barrière de corail
 			h0[i] = hR ; 
 		};
+
+
 	};
   //NIL : OK
 	vel2[i] = g*h0[i] ; 
