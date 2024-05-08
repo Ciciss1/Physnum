@@ -33,7 +33,7 @@ v_uniform = "true"
 
 
 def omega_n(n,g,h00,xL,xR) : 
-    return n*np.pi*np.sqrt(g*h00)/(xR-xL)
+    return np.pi*(n+1/2)*np.sqrt(g*h00)/(xR-xL)
 
 
 A = 1
@@ -41,8 +41,8 @@ x1 = 2
 x2 = 6
 
 equation_type="Eq1"
-nx=20
-n_init=2
+nx=50
+n_init=1
 initialization="pas mode"
 initial_state="right"
 
@@ -50,7 +50,7 @@ CFL=1.0
 nsteps=200
 impose_nsteps="true" 
 
-output="./outputs/10000.out"
+output="./outputs/test.out"
 n_stride=1
 ecrire_f=1
 
