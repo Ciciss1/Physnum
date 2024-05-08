@@ -27,7 +27,7 @@ input_filename = 'input_example'  # Name of the input file
 
 
 #for input file
-cb_gauche = "fixe"
+cb_gauche = "libre"
 cb_droite = "libre"
 v_uniform = "true"
 
@@ -43,7 +43,7 @@ x2 = 6
 equation_type="Eq1"
 nx=50
 n_init=1
-initialization="pas mode"
+initialization="mode"
 initial_state="right"
 
 CFL=1.0
