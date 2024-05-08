@@ -17,6 +17,7 @@ void boundary_condition(vector<double> &fnext, vector<double> &fnow, double cons
 		double const& t,double const& dt, \
 		vector<double> &beta2, string &bc_l, string &bc_r, int &N)
 {
+  int ni = N-1;
   // Condition au bord gauche : 
   // NIL : OK
 	if(bc_l == "fixe"){
@@ -33,15 +34,15 @@ void boundary_condition(vector<double> &fnext, vector<double> &fnow, double cons
 	//Condition au bord droit
   // NIL : OK
 	if(bc_r == "fixe"){
-		fnext[N] = fnow[N] ; 
+		fnext[ni] = fnow[ni] ; 
 	};
   // NIL : OK
 	if(bc_r == "libre"){
-		fnext[N] = fnext[N-1]; 
+		fnext[ni] = fnext[ni-1]; 
 	};
   //NIL : OK
 	if(bc_r == "sortie"){
-		fnext[N] = fnow[N] - sqrt(beta2[N]) *(fnow[N] - fnow[N-1]) ;
+		fnext[ni] = fnow[ni] - sqrt(beta2[ni]) *(fnow[ni] - fnow[ni-1]) ;
 	}
 }
 
@@ -162,7 +163,7 @@ int main(int argc, char* argv[])
 // Ca n'a pas été fait dans le code, or on en a vraiment besoin donc je l'ai fait 
 // NIL : OK
   x[0] = xL ; 
-  for(int i(1); i<=N; ++i){
+  for(int i(1); i<N; ++i){
 	  x[i] = x[i-1] + dx ; 
   };
 
