@@ -38,7 +38,7 @@ A = 1
 x1 = 50e3
 x2 = 250e3
 
-equation_type="Eq1"
+equation_type="Eq2"
 nx=1000
 n_init=3
 initialization="pas mode"
