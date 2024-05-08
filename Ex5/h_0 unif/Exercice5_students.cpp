@@ -52,7 +52,7 @@ double finit_mode(double x, double xL, double n_init, double xR, double A)
 {
   double finit_(0.0);
   const double PI = 3.1415926535897932384626433832795028841971e0;
-  finit_ = A*sin(PI*(n_init + 0.5)*(1 + (2*x)/(xR - xL) - (xR + xL)/(xR - xL))) ; 
+  finit_ = A*sin(PI*(n_init + 0.5)*(x - xL)/(xR - xL)) ; 
   return finit_;
 }
 

@@ -33,7 +33,7 @@ v_uniform = "true"
 
 
 def omega_n(n,g,h00,xL,xR) : 
-    return 2*np.pi*(n+1/2)*np.sqrt(g*h00)/(xR-xL)
+    return np.pi*(n+1/2)*np.sqrt(g*h00)/(xR-xL)
 
 
 A = 1
