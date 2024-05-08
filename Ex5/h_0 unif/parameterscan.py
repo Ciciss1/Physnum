@@ -27,8 +27,8 @@ input_filename = 'input_example'  # Name of the input file
 
 
 #for input file
-cb_gauche = "fixe"
-cb_droite = "libre"
+cb_gauche = "libre"
+cb_droite = "fixe"
 v_uniform = "true"
 
 
@@ -69,7 +69,7 @@ g = 9.81
 
 omega = omega_n(n_init,g,h00,xL,xR)
 
-tfin = 2*np.pi/omega
+tfin = 4*(xR-xL)/(np.sqrt(g*h00))
 print("tfin : ", tfin)
 
 dt = tfin/nsteps

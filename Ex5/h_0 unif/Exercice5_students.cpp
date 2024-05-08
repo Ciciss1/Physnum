@@ -63,7 +63,7 @@ double finit_eq4(double x, double x1, double x2, double A)
   if (x <= x1)
     finit_ = 0;
   else if (x < x2)
-    finit_ = (A / 2)*(1 - cos(2*PI*((x-x1)/(x2-x1))));
+    finit_ = (A/2)*(1 - cos(2*PI*((x-x1)/(x2-x1))));
   else
     finit_ = 0;
 
