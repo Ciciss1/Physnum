@@ -36,6 +36,65 @@ green = convert_RGB_01(145.0,188.0,134.0)
 dark_yellow = convert_RGB_01(184.0,156.0,61.0)
 
 
+def remove_ticks(axis,indexes_to_remove, ax = plt) :
+    if axis == 'x' : 
+        current_ticks = ax.get_xticks()
+        current_ticks = list(current_ticks)
+        for index in sorted(indexes_to_remove, reverse=True):
+            del current_ticks[index]
+        ax.set_xticks(current_ticks)
+    if axis == 'y' : 
+        current_ticks = ax.get_yticks()
+        current_ticks = list(current_ticks)
+        for index in sorted(indexes_to_remove, reverse=True):
+            del current_ticks[index]
+        ax.set_yticks(current_ticks)
+        
+def add_ticks(axis,new_ticks_values, new_ticks_texts,text_size = 25, ax = plt, divide = 1) :
+    if axis == 'x' : 
+        new_ticks_positions = list(ax.get_xticks()) + new_ticks_values
+        new_ticks_labels = [tick/(10**divide) if tick not in new_ticks_values else new_ticks_texts[new_ticks_values.index(tick)] for tick in new_ticks_positions]
+
+        ax.set_xticks(new_ticks_positions)
+        ax.set_xticklabels(new_ticks_labels)
+        
+        for i in range(len(new_ticks_values)) : 
+            ticks_labels = ax.get_xticks()
+            ticks = ax.get_xticklabels()
+            index = np.where(ticks_labels == new_ticks_values[i])[0]
+            ticks[index[0]].set_fontsize(text_size)
+            
+    if axis == 'y' :
+        new_ticks_positions = list(ax.get_yticks()) + new_ticks_values
+        new_ticks_labels = [str(tick) if tick not in new_ticks_values else new_ticks_texts[new_ticks_values.index(tick)] for tick in new_ticks_positions]
+
+        ax.set_yticks(new_ticks_positions)
+        ax.set_yticklabels(new_ticks_labels)
+        
+        for i in range(len(new_ticks_values)) : 
+            ticks_labels = ax.get_yticks()
+            ticks = ax.get_yticklabels()
+            index = np.where(ticks_labels == new_ticks_values[i])[0]
+            ticks[index[0]].set_fontsize(text_size)
+            
+    first_x = ax.get_xlim()[0]
+    last_x = ax.get_xlim()[1]
+    
+    range_x = abs(last_x - first_x)
+    
+    last_y = ax.get_ylim()[1]
+    first_y = ax.get_ylim()[0]
+    
+    range_y = abs(last_y - first_y)
+    
+    if axis == 'x' :
+        ax.text(last_x-range_x*0.05 ,first_y-range_y*0.12, f'1e{divide}', fontsize = 12)
+    
+    if axis == 'y' :
+        ax.text(first_x-range_x*0.12 ,last_y-range_y*0.05, f'1e{divide}', fontsize = 12)
+    
+
+
 
 def zoom_in_plot(ax,X,Y,xlim,ylim,x_zoom,y_zoom, colors,markers,linesytles,corner1 = ["top","top"],corner2 = ["top","top"],multiply = 2, linewidth = 2, title = "", ticks = False) :
     N = len(X)

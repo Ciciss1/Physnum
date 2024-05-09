@@ -27,8 +27,8 @@ input_filename = 'input_example'  # Name of the input file
 
 
 #for input file
-cb_gauche = "libre"
-cb_droite = "libre"
+cb_gauche = "fixe"
+cb_droite = "fixe"
 v_uniform = "true"
 
 
