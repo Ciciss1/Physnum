@@ -42,15 +42,15 @@ x2 = 6
 
 equation_type="Eq1"
 nx=50
-n_init=0
-initialization="pas mode"
+n_init=1
+initialization="mode"
 initial_state="static"
 
 CFL=1.0
 nsteps=200
 impose_nsteps="true" 
 
-output="./outputs/righth0.out"
+output="./outputs/modepropre.out"
 n_stride=1
 ecrire_f=1
 
@@ -82,13 +82,13 @@ print("betaCFL : ", beta_CFL)
 
 
 
-# #run the simulation
+#run the simulation
 
-# cmd = f"{repertoire}{executable} {input_filename} cb_gauche={cb_gauche} cb_droite={cb_droite} v_uniform={v_uniform} tfin={tfin} A={A} x1={x1} x2={x2} equation_type={equation_type} nx={nx} n_init={n_init} initialization={initialization} initial_state={initial_state} CFL={CFL} nsteps={nsteps} impose_nsteps={impose_nsteps} output={output} n_stride={n_stride} ecrire_f={ecrire_f} hL={hL} hR={hR} hC={hC} h00={h00} xa={xa} xb={xb} xc={xc} xd={xd} xL={xL} xR={xR} g={g}"
+cmd = f"{repertoire}{executable} {input_filename} cb_gauche={cb_gauche} cb_droite={cb_droite} v_uniform={v_uniform} tfin={tfin} A={A} x1={x1} x2={x2} equation_type={equation_type} nx={nx} n_init={n_init} initialization={initialization} initial_state={initial_state} CFL={CFL} nsteps={nsteps} impose_nsteps={impose_nsteps} output={output} n_stride={n_stride} ecrire_f={ecrire_f} hL={hL} hR={hR} hC={hC} h00={h00} xa={xa} xb={xb} xc={xc} xd={xd} xL={xL} xR={xR} g={g}"
 
-# print(cmd)
-# subprocess.run(cmd, shell=True)
-# print('Done.')
+print(cmd)
+subprocess.run(cmd, shell=True)
+print('Done.')
 
 
 
@@ -105,52 +105,52 @@ x = np.linspace(xL, xR, N)
 
 
 
-for i in [0,30, 40, 78, 90, 129]:
+for i in [0, 10,22]:
     ax.plot(x,data[i,1:], label=f"t = {t[i]:.2f} s")
             
 # ax.plot(data[0,1:], label=f"t = {t[0]:.2f} s", color="black")
 
 # Add arrows to show wave propagation direction
 
-ax.annotate("", xy=(5, -0.75), xytext=(3.5, -0.75),
-                arrowprops=dict(arrowstyle="->", color="red"))
-ax.annotate("", xy=(1.5, 0.75), xytext=(3, 0.75),
-                arrowprops=dict(arrowstyle="->", color="red"))
+# ax.annotate("", xy=(3, 0.4), xytext=(4, 0.4),
+#                 arrowprops=dict(arrowstyle="->", color="red"))
+# ax.annotate("", xy=(8.5, -0.4), xytext=(7.5, -0.4),
+#                 arrowprops=dict(arrowstyle="->", color="red"))
 
 plt.tight_layout()
 u.set_legend_properties(ax, fontsize=18,ncol=2)
-u.savefig(fig, "right1h0", ext = ext)
+u.savefig(fig, "modepropre", ext = ext)
 
 
 
-# #animate
-# # Initialisation de la figure
-# fig, ax = plt.subplots()
-# line, = ax.plot([], [], lw=2)
+#animate
+# Initialisation de la figure
+fig, ax = plt.subplots()
+line, = ax.plot([], [], lw=2)
 
 
-# # Définition de la fonction d'initialisation de l'animation
-# def init():
-#     ax.set_xlim(xL, xR)
-#     ax.set_ylim(-4, 3)
-#     return line,
+# Définition de la fonction d'initialisation de l'animation
+def init():
+    ax.set_xlim(xL, xR)
+    ax.set_ylim(-4, 3)
+    return line,
 
-# # Fonction d'animation
-# def animate(i):
-#     line.set_data(x, data[i, 1:])
-#     ax.set_title(f"t = {t[i]:.2f} s")
+# Fonction d'animation
+def animate(i):
+    line.set_data(x, data[i, 1:])
+    ax.set_title(f"t = {t[i]:.2f} s")
 
-#     ax.hlines(-3, xL, xR, color='brown', linestyle='--')
-#     return line,
+    ax.hlines(-3, xL, xR, color='brown', linestyle='--')
+    return line,
 
-# # Création de l'animation
-# ani = FuncAnimation(fig, animate, frames=len(data), init_func=init, blit=True, interval=40)
+# Création de l'animation
+ani = FuncAnimation(fig, animate, frames=len(data), init_func=init, blit=True, interval=40)
 
-# # Enregistrer l'animation au format GIF
-# ani.save("simulation_vagues.gif", writer='pillow')
+# Enregistrer l'animation au format GIF
+ani.save("simulation_vagues.gif", writer='pillow')
 
-# # Affichage de l'animation
-# plt.show()
+# Affichage de l'animation
+plt.show()
 
 
     
