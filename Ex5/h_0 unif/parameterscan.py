@@ -28,12 +28,16 @@ input_filename = 'input_example'  # Name of the input file
 
 #for input file
 cb_gauche = "fixe"
+<<<<<<< HEAD
 cb_droite = "fixe"
+=======
+cb_droite = "libre"
+>>>>>>> f7f9bca9ff2b81ec6a2197a759c9b13503345659
 v_uniform = "true"
 
 
 def omega_n(n,g,h00,xL,xR) : 
-    return 2*np.pi*(n+1/2)*np.sqrt(g*h00)/(xR-xL)
+    return np.pi*(n+1/2)*np.sqrt(g*h00)/(xR-xL)
 
 
 A = 1
@@ -42,15 +46,15 @@ x2 = 6
 
 equation_type="Eq1"
 nx=50
-n_init=1
-initialization="mode"
+n_init=0
+initialization="pas mode"
 initial_state="right"
 
 CFL=1.0
 nsteps=200
 impose_nsteps="true" 
 
-output="./outputs/test.out"
+output="./outputs/righth0.out"
 n_stride=1
 ecrire_f=1
 
@@ -105,14 +109,14 @@ x = np.linspace(xL, xR, N)
 
 
 
-for i in [0,1,2,3,40]:
+for i in [0,18,21,37,70]:
     ax.plot(x,data[i,1:], label=f"t = {t[i]:.2f} s")
             
 # ax.plot(data[0,1:], label=f"t = {t[0]:.2f} s", color="black")
 
 plt.tight_layout()
 u.set_legend_properties(ax, fontsize=18,ncol=2)
-u.savefig(fig, "plot", ext = ext)
+u.savefig(fig, "righth0", ext = ext)
 
 
 
@@ -125,7 +129,7 @@ line, = ax.plot([], [], lw=2)
 # Définition de la fonction d'initialisation de l'animation
 def init():
     ax.set_xlim(xL, xR)
-    ax.set_ylim(-4, 1)
+    ax.set_ylim(-4, 3)
     return line,
 
 # Fonction d'animation
