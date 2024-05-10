@@ -14,7 +14,7 @@ from matplotlib.animation import FuncAnimation
 from scipy.signal import find_peaks
 from scipy.optimize import curve_fit
 
-ext = "png"
+ext = "pdf"
 
 
 # TODO adapt to what you need (folder path executable input filename)
@@ -32,25 +32,29 @@ cb_droite = "libre"
 v_uniform = "true"
 
 
-def omega_n(n,g,h00,xL,xR) : 
-    return np.pi*(n+1/2)*np.sqrt(g*h00)/(xR-xL)
+def k_n(n,xL,xR) : 
+    return np.pi*(n+0.5)/(xR-xL)
 
+def modeanalytique(x,t,n,g,h00,xL,xR,A) : 
+    k = k_n(n,xL,xR)
+    omega = k*np.sqrt(g*h00)
+    return A*np.sin(k*(x-xL))*np.cos(-omega*t)
 
 A = 1
 x1 = 2
 x2 = 6
 
 equation_type="Eq1"
-nx=50
+nx=20
 n_init=1
-initialization="mode"
-initial_state="static"
+initialization="pas mode"
+initial_state="right"
 
 CFL=1.0
-nsteps=200
+nsteps=100
 impose_nsteps="true" 
 
-output="./outputs/modepropre.out"
+output="./outputs/test.out"
 n_stride=1
 ecrire_f=1
 
@@ -67,9 +71,9 @@ xR= 10
 
 g = 9.81
 
-omega = omega_n(n_init,g,h00,xL,xR)
+frq = k_n(n_init,xL,xR)*np.sqrt(g*h00)/(2*np.pi)
 
-tfin = 4*(xR-xL)/(np.sqrt(g*h00))
+tfin = 4*(xR-xL)/np.sqrt(g*h00)
 print("tfin : ", tfin)
 
 dt = tfin/nsteps
@@ -103,11 +107,15 @@ ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$x$ [m]", ylab
 
 x = np.linspace(xL, xR, N)
 
+# mode = modeanalytique(x, tfin, n_init, g, h00, xL, xR, A)
+# ax.plot(x, mode, label=f"Analytical Mode at t = {tfin:.2f} s", linestyle='--')
 
+for i in [200]:
+    if i == 200:
+        ax.plot(x, data[i, 1:], label=f"t = {t[i]:.2f} s = $T_n$")
+    else:
+        ax.plot(x, data[i, 1:], label=f"t = {t[i]:.2f} s")
 
-for i in [0, 10,22]:
-    ax.plot(x,data[i,1:], label=f"t = {t[i]:.2f} s")
-            
 # ax.plot(data[0,1:], label=f"t = {t[0]:.2f} s", color="black")
 
 # Add arrows to show wave propagation direction
@@ -118,8 +126,8 @@ for i in [0, 10,22]:
 #                 arrowprops=dict(arrowstyle="->", color="red"))
 
 plt.tight_layout()
-u.set_legend_properties(ax, fontsize=18,ncol=2)
-u.savefig(fig, "modepropre", ext = ext)
+u.set_legend_properties(ax, fontsize=18,ncol=1)
+u.savefig(fig, "test", ext = ext)
 
 
 
