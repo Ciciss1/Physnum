@@ -14,7 +14,7 @@ from matplotlib.animation import FuncAnimation
 from scipy.signal import find_peaks
 from scipy.optimize import curve_fit
 
-ext = "pdf"
+ext = "png"
 
 
 # TODO adapt to what you need (folder path executable input filename)
@@ -47,14 +47,14 @@ x2 = 6
 equation_type="Eq1"
 nx=20
 n_init=1
-initialization="pas mode"
-initial_state="right"
+initialization="mode"
+initial_state="static"
 
 CFL=1.0
-nsteps=100
+nsteps=30
 impose_nsteps="true" 
 
-output="./outputs/test.out"
+output="./outputs/erreurmodepropre.out"
 n_stride=1
 ecrire_f=1
 
@@ -71,95 +71,157 @@ xR= 10
 
 g = 9.81
 
-frq = k_n(n_init,xL,xR)*np.sqrt(g*h00)/(2*np.pi)
+# frq = k_n(n_init,xL,xR)*np.sqrt(g*h00)/(2*np.pi)
 
-tfin = 4*(xR-xL)/np.sqrt(g*h00)
-print("tfin : ", tfin)
+# tfin = 1/frq
+# print("tfin : ", tfin)
 
-dt = tfin/nsteps
-dx = (xR-xL)/nx
+# dt = tfin/nsteps
+# dx = (xR-xL)/nx
 
-u_ = np.sqrt(g*h00)
-beta_CFL = u_ * dt/dx
+# u_ = np.sqrt(g*h00)
+# beta_CFL = u_ * dt/dx
 
-print("betaCFL : ", beta_CFL)
-
-
-
-#run the simulation
-
-cmd = f"{repertoire}{executable} {input_filename} cb_gauche={cb_gauche} cb_droite={cb_droite} v_uniform={v_uniform} tfin={tfin} A={A} x1={x1} x2={x2} equation_type={equation_type} nx={nx} n_init={n_init} initialization={initialization} initial_state={initial_state} CFL={CFL} nsteps={nsteps} impose_nsteps={impose_nsteps} output={output} n_stride={n_stride} ecrire_f={ecrire_f} hL={hL} hR={hR} hC={hC} h00={h00} xa={xa} xb={xb} xc={xc} xd={xd} xL={xL} xR={xR} g={g}"
-
-print(cmd)
-subprocess.run(cmd, shell=True)
-print('Done.')
+# print("betaCFL : ", beta_CFL)
 
 
 
-#extract
-data = np.loadtxt(output + "_f")
-t = data[:, 0]
 
-N=nx+1
 
-#plot
-ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$x$ [m]", ylabel=r'Amplitude [m]')
+# #run the simulation
 
-x = np.linspace(xL, xR, N)
+# cmd = f"{repertoire}{executable} {input_filename} cb_gauche={cb_gauche} cb_droite={cb_droite} v_uniform={v_uniform} tfin={tfin} A={A} x1={x1} x2={x2} equation_type={equation_type} nx={nx} n_init={n_init} initialization={initialization} initial_state={initial_state} CFL={CFL} nsteps={nsteps} impose_nsteps={impose_nsteps} output={output} n_stride={n_stride} ecrire_f={ecrire_f} hL={hL} hR={hR} hC={hC} h00={h00} xa={xa} xb={xb} xc={xc} xd={xd} xL={xL} xR={xR} g={g}"
+
+# print(cmd)
+# subprocess.run(cmd, shell=True)
+# print('Done.')
+
+
+
+# #extract
+# data = np.loadtxt(output + "_f")
+# t = data[:, 0]
+
+# N=nx+1
+
+# #plot
+# ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$x$ [m]", ylabel=r'Amplitude [m]')
+
+# x = np.linspace(xL, xR, N)
 
 # mode = modeanalytique(x, tfin, n_init, g, h00, xL, xR, A)
-# ax.plot(x, mode, label=f"Analytical Mode at t = {tfin:.2f} s", linestyle='--')
 
-for i in [200]:
-    if i == 200:
-        ax.plot(x, data[i, 1:], label=f"t = {t[i]:.2f} s = $T_n$")
-    else:
-        ax.plot(x, data[i, 1:], label=f"t = {t[i]:.2f} s")
+# erreur = np.trapz(np.abs(data[-1, 1:] - mode), x)
+# print("erreur =", erreur)
 
-# ax.plot(data[0,1:], label=f"t = {t[0]:.2f} s", color="black")
+# ax.plot(x, mode, label=f"Mode analytique t = {tfin:.2f} s", linestyle='--')
+
+# for i in [100]:
+#     ax.plot(x,data[i,1:], label=f"t = {t[i]:.2f} s")
+    
 
 # Add arrows to show wave propagation direction
 
-# ax.annotate("", xy=(3, 0.4), xytext=(4, 0.4),
-#                 arrowprops=dict(arrowstyle="->", color="red"))
-# ax.annotate("", xy=(8.5, -0.4), xytext=(7.5, -0.4),
-#                 arrowprops=dict(arrowstyle="->", color="red"))
+# ax.annotate("", xy=(3.2, 0.2), xytext=(4.2, 0.2),
+#                 arrowprops=dict(arrowstyle="->", color="black"))
+# ax.annotate("", xy=(8.5, -0.2), xytext=(7.5, -0.2),
+#                 arrowprops=dict(arrowstyle="->", color="black"))
+# ax.annotate("", xy=(8, -0.8), xytext=(9, -0.8),
+#                 arrowprops=dict(arrowstyle="->", color="black"))
+# ax.annotate("", xy=(4, -0.4), xytext=(3, -0.4),
+#                 arrowprops=dict(arrowstyle="->", color="black"))
+
+# plt.tight_layout()
+# u.set_legend_properties(ax, fontsize=18,ncol=2)
+# u.savefig(fig, "erreurmodepropre", ext = ext)
+
+
+
+# #animate
+# # Initialisation de la figure
+# fig, ax = plt.subplots()
+# line, = ax.plot([], [], lw=2)
+
+
+# # Définition de la fonction d'initialisation de l'animation
+# def init():
+#     ax.set_xlim(xL, xR)
+#     ax.set_ylim(-4, 3)
+#     return line,
+
+# # Fonction d'animation
+# def animate(i):
+#     line.set_data(x, data[i, 1:])
+#     ax.set_title(f"t = {t[i]:.2f} s")
+
+#     ax.hlines(-3, xL, xR, color='brown', linestyle='--')
+#     return line,
+
+# # Création de l'animation
+# ani = FuncAnimation(fig, animate, frames=len(data), init_func=init, blit=True, interval=40)
+
+# # Enregistrer l'animation au format GIF
+# ani.save("simulation_vagues.gif", writer='pillow')
+
+# # Affichage de l'animation
+# plt.show()
+
+
+# Initialize lists to store the nsteps values and corresponding errors
+nsteps_list = []
+error_list = []
+
+# Loop over the nsteps values
+for i in range(3):
+
+    frq = k_n(n_init,xL,xR)*np.sqrt(g*h00)/(2*np.pi)
+
+    tfin = 1/frq
+    print("tfin : ", tfin)
+
+    dt = tfin/nsteps
+    dx = (xR-xL)/nx
+
+    u_ = np.sqrt(g*h00)
+    beta_CFL = u_ * dt/dx
+
+    print("betaCFL : ", beta_CFL)
+
+    cmd = f"{repertoire}{executable} {input_filename} cb_gauche={cb_gauche} cb_droite={cb_droite} v_uniform={v_uniform} tfin={tfin} A={A} x1={x1} x2={x2} equation_type={equation_type} nx={nx} n_init={n_init} initialization={initialization} initial_state={initial_state} CFL={CFL} nsteps={nsteps} impose_nsteps={impose_nsteps} output={output} n_stride={n_stride} ecrire_f={ecrire_f} hL={hL} hR={hR} hC={hC} h00={h00} xa={xa} xb={xb} xc={xc} xd={xd} xL={xL} xR={xR} g={g}"
+
+    print(cmd)
+    subprocess.run(cmd, shell=True)
+    print('Done.')
+       
+    # Load the data
+    data = np.loadtxt(output + "_f")
+       
+    # Calculate the mode analytique
+    N=nx+1
+    x = np.linspace(xL, xR, N)
+    mode = modeanalytique(x, tfin, n_init, g, h00, xL, xR, A)
+      
+    # Calculate the error
+    erreur = np.trapz(np.abs(data[-1, 1:] - mode), x)
+        
+    # Append the nsteps value and error to the lists
+    nsteps_list.append(nsteps)
+    error_list.append(erreur)
+
+    nx = 2*nx
+    nsteps = 2*nsteps
+
+# # Plot the error vs nsteps
+# plt.plot(1/(np.array(nsteps_list)**3), error_list)
+# plt.xlabel("1/nsteps^2")
+# plt.ylabel("Error")
+# plt.title("Error vs 1/nsteps^2")
+# plt.show()
+
+ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$1/n_{steps}^2$", ylabel=r'Erreur position finale')
+
+ax.plot(1/np.array(nsteps_list), error_list, label=f"Erreur position finale")
 
 plt.tight_layout()
-u.set_legend_properties(ax, fontsize=18,ncol=1)
-u.savefig(fig, "test", ext = ext)
-
-
-
-#animate
-# Initialisation de la figure
-fig, ax = plt.subplots()
-line, = ax.plot([], [], lw=2)
-
-
-# Définition de la fonction d'initialisation de l'animation
-def init():
-    ax.set_xlim(xL, xR)
-    ax.set_ylim(-4, 3)
-    return line,
-
-# Fonction d'animation
-def animate(i):
-    line.set_data(x, data[i, 1:])
-    ax.set_title(f"t = {t[i]:.2f} s")
-
-    ax.hlines(-3, xL, xR, color='brown', linestyle='--')
-    return line,
-
-# Création de l'animation
-ani = FuncAnimation(fig, animate, frames=len(data), init_func=init, blit=True, interval=40)
-
-# Enregistrer l'animation au format GIF
-ani.save("simulation_vagues.gif", writer='pillow')
-
-# Affichage de l'animation
-plt.show()
-
-
-    
-
+u.set_legend_properties(ax, fontsize=18,ncol=2)
+u.savefig(fig, "erreurmodepropre", ext = ext)
