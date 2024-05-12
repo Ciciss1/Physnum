@@ -14,7 +14,7 @@ from matplotlib.animation import FuncAnimation
 from scipy.signal import find_peaks
 from scipy.optimize import curve_fit
 
-ext = "png"
+ext = "pdf"
 
 
 # TODO adapt to what you need (folder path executable input filename)
@@ -168,11 +168,12 @@ g = 9.81
 
 
 # Initialize lists to store the nsteps values and corresponding errors
-nsteps_list = []
+dt_list = []
+dx_list = []
 error_list = []
 
 # Loop over the nsteps values
-for i in range(3):
+for i in range(10):
 
     frq = k_n(n_init,xL,xR)*np.sqrt(g*h00)/(2*np.pi)
 
@@ -205,7 +206,8 @@ for i in range(3):
     erreur = np.trapz(np.abs(data[-1, 1:] - mode), x)
         
     # Append the nsteps value and error to the lists
-    nsteps_list.append(nsteps)
+    dt_list.append(dt)
+    dx_list.append(dx)
     error_list.append(erreur)
 
     nx = 2*nx
@@ -218,10 +220,26 @@ for i in range(3):
 # plt.title("Error vs 1/nsteps^2")
 # plt.show()
 
-ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$1/n_{steps}^2$", ylabel=r'Erreur position finale')
+ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$\Delta t$", ylabel=r'Erreur position finale')
 
-ax.plot(1/np.array(nsteps_list), error_list, label=f"Erreur position finale")
+ax.loglog(np.array(dt_list), error_list,'-x', label=f"Erreur position finale")
+
+x_line = np.linspace(0, 0.1, 100)
+y_line = 5*x_line
+plt.loglog(x_line, y_line, linestyle='--', color='red', label=r"$\sim \Delta t$")
 
 plt.tight_layout()
 u.set_legend_properties(ax, fontsize=18,ncol=2)
-u.savefig(fig, "erreurmodepropre", ext = ext)
+u.savefig(fig, "erreurmodepropredt", ext = ext)
+
+ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$\Delta x$", ylabel=r'Erreur position finale')
+
+ax.loglog(np.array(dx_list), error_list,'-x', label=f"Erreur position finale")
+
+x_line = np.linspace(0, 1, 100)
+y_line = 0.5*x_line
+plt.loglog(x_line, y_line, linestyle='--', color='red', label=r"$\sim \Delta x$")
+
+plt.tight_layout()
+u.set_legend_properties(ax, fontsize=18,ncol=2)
+u.savefig(fig, "erreurmodepropredx", ext = ext)
