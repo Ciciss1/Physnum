@@ -65,7 +65,7 @@ double prob_left(double xL, double xR, double n_v, double dx, vec_cmplx psi)
 	int c;
 	double integrale(0.00); 
 	// Calcul des variables 
-	xc = xL + (xR - xL)/(2*n_v);
+	xc = xL + (xR - xL)/(n_v);
 	c = (xc -xL)/dx ; 
 	// Calcul de l'intégrale en utilisant la règle des trapèzes
 	for(int i = 0; i< c ; ++i){
@@ -83,7 +83,7 @@ double prob_right(double xL, double xR, double n_v, int Npoints, double dx, vec_
 	int c;
 	double integrale(0.00) ; 
 	// Calcul des variables
-	xc = xL + (xR - xL)/(2*n_v);
+	xc = xL + (xR - xL)/(n_v);
 	c = (xc -xL)/dx ; 
 	// Calcul de l'intégrale en utilisant la règle des trapèzes
 	for(int i = c ; i < (Npoints-1) ; ++i){
@@ -445,15 +445,15 @@ main(int argc, char** argv)
     fichier_psi << endl;
 
 
-	cout << "prob_left = " << prob_left(xL, xR, n_v, dx, psi) << endl;
-	cout << "prob_right = " << prob_right(xL, xR, n_v, Npoints, dx, psi) << endl;
-	cout << "E = " << E(psi, x, V0, m, n_v, xL, xR, dx, hbar, Npoints) << endl;
-	cout << "xmoy = " << xmoy(psi, x, dx, Npoints) << endl;
-	cout << "x2moy = " << x2moy(psi, x, dx, Npoints) << endl;
-	cout << "pmoy = " << pmoy(psi, complex_i, dx, hbar, Npoints) << endl;
-	cout << "p2moy = " << p2moy(psi, dx, hbar, Npoints) << endl;
-	cout << "xincertitude = " << xincertitude(psi, x, dx, Npoints) << endl;
-	cout << "pincertitude = " << pincertitude(psi, complex_i, dx, hbar, Npoints) << endl;
+	// cout << "prob_left = " << prob_left(xL, xR, n_v, dx, psi) << endl;
+	// cout << "prob_right = " << prob_right(xL, xR, n_v, Npoints, dx, psi) << endl;
+	// cout << "E = " << E(psi, x, V0, m, n_v, xL, xR, dx, hbar, Npoints) << endl;
+	// cout << "xmoy = " << xmoy(psi, x, dx, Npoints) << endl;
+	// cout << "x2moy = " << x2moy(psi, x, dx, Npoints) << endl;
+	// cout << "pmoy = " << pmoy(psi, complex_i, dx, hbar, Npoints) << endl;
+	// cout << "p2moy = " << p2moy(psi, dx, hbar, Npoints) << endl;
+	// cout << "xincertitude = " << xincertitude(psi, x, dx, Npoints) << endl;
+	// cout << "pincertitude = " << pincertitude(psi, complex_i, dx, hbar, Npoints) << endl;
 
     // Ecriture des observables :
     fichier_observables << t << " " << prob_left(xL, xR, n_v, dx, psi) << " " << prob_right(xL, xR, n_v, Npoints, dx, psi) << " " << E(psi, x, V0, m, n_v, xL, xR, dx, hbar, Npoints) << " " << xmoy(psi, x, dx, Npoints) << " "  
