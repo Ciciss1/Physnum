@@ -96,6 +96,8 @@ double prob_right(double xL, double xR, double n_v, int Npoints, double dx, vec_
 // LUIZA : Définition de l'énergie de la particule, moyenne de l'Hamiltonien
 // NIL : pas ok, voir commentaire dans la fonction
 //NIL : re pas ok, le psi_star était mal défini 
+
+//UTILISER LA MATRICE
 double E(vec_cmplx psi, vector<double> x, double V0, double m, double n_v, double xL, double xR, double dx, double hbar, int Npoints)
 {
 	// Définition des variables dont on a besoin :
