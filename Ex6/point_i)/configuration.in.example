@@ -11,7 +11,7 @@ sigma_norm = 0.04
 % Numérique :
 dt = 1e-4
 Nintervals = 256
-output = output
+output = V0_0
 
 % Printing: set to 0 to reduce printouts
 verbose = 1
