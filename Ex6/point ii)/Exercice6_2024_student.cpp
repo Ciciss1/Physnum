@@ -62,18 +62,24 @@ double prob_left(double xL, double xR, double n_v, double dx, vec_cmplx psi, vec
 {//Définition des variables dont on a besoin
 	double xc;
 	int c;
-	double integrale(0.00); 
+	complex<double> integrale(0.00); 
 	// Calcul des variables 
 	xc = xL + (xR - xL)/(n_v);
 	// Calcul de l'intégrale en utilisant la règle des trapèzes
 	int i = 0;
 	while (x[i] < xc)
 	{
-		integrale += (pow(abs(psi[i]),2) + pow(abs(psi[i+1]),2))/2;
+		
+		// double psi_i_module = pow(real(psi[i]),2)+pow(imag(psi[i]),2);
+		// double psi_iplus_module = pow(real(psi[i+1]),2)+pow(imag(psi[i+1]),2);
+
+		complex<double> psi_i_module = conj(psi[i])*psi[i];
+		complex<double> psi_iplus_module = conj(psi[i+1])*psi[i+1];
+
+		integrale += dx*(psi_i_module + psi_iplus_module)/2.0;
 		i++;
 	}
-	integrale*=dx;
-    return integrale;
+    return real(integrale);
 }
 //LUIZA : Calcul de la probabilité qu'on trouve la particule à droite de la barrière, avec xc le maximum local du potentiel
 //NIL : Ok
@@ -82,7 +88,7 @@ double prob_right(double xL, double xR, double n_v, int Npoints, double dx, vec_
 	//Définition des variables dont on a besoin
 	double xc;
 	int c;
-	double integrale(0.00) ; 
+	complex<double> integrale(0.00) ; 
 	// Calcul des variables
 	xc = xL + (xR - xL)/(n_v);
 	int i = 0;
@@ -92,10 +98,12 @@ double prob_right(double xL, double xR, double n_v, int Npoints, double dx, vec_
 	}
 	for (int j = i; j < (Npoints-1); ++j)
 	{
-		integrale += (pow(abs(psi[j]),2) + pow(abs(psi[j+1]),2))/2;
+		complex<double> psi_i_module = conj(psi[j])*psi[j];
+		complex<double> psi_iplus_module = conj(psi[j+1])*psi[j+1];
+
+		integrale += dx*(psi_i_module + psi_iplus_module)/2.0;
 	}
-	integrale *= dx;
-	return integrale;
+	return real(integrale);
 }	
 
 double Proba_totale(double xL, double xR, double n_v, int Npoints, double dx, vec_cmplx psi)
@@ -512,7 +520,7 @@ main(int argc, char** argv)
 		for (int i(0); i < Npoints; ++i) {
 			psi_tmp[i] = dB[i] * psi[i];
 			if (i > 0)
-				psi_tmp[i] += aB[i] * psi[i - 1];
+				psi_tmp[i] += aB[i-1] * psi[i - 1];
 			if (i < Npoints - 1)
 				psi_tmp[i] += cB[i] * psi[i + 1];
 		}
