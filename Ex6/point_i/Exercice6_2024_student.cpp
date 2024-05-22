@@ -348,6 +348,8 @@ main(int argc, char** argv)
     double V0 = configFile.get<double>("V0");
     double n_v = 2.0;
     double n  = configFile.get<int>("n"); // Read mode number as integer, convert to double
+	string output = configFile.get<string>("output");
+	cout << "output = " << output << endl;
 
     // Parametres numeriques :
 
@@ -467,18 +469,18 @@ main(int argc, char** argv)
 
 
     // Fichiers de sortie :
-    string output = configFile.get<string>("output");
 
-    ofstream fichier_potentiel(("./outputs/" + output + "_pot.out").c_str());
+	
+    ofstream fichier_potentiel((output + "_pot").c_str());
     fichier_potentiel.precision(15);
     for (int i(0); i < Npoints; ++i)
         fichier_potentiel << x[i] << " " << V(V0, n_v, x[i], xL, xR) << endl;
     fichier_potentiel.close();
 
-    ofstream fichier_psi(("./outputs/" + output + "_psi2.out").c_str());
+    ofstream fichier_psi((output + "_psi2").c_str());
     fichier_psi.precision(15);
 
-    ofstream fichier_observables(("./outputs/" + output + "_obs.out").c_str());
+    ofstream fichier_observables((output + "_obs").c_str());
     fichier_observables.precision(15);
 	
     // t0 writing
@@ -546,7 +548,6 @@ main(int argc, char** argv)
     } // Fin de la boucle temporelle
 
 
-
     fichier_observables.close();
     fichier_psi.close();
 
@@ -554,4 +555,5 @@ main(int argc, char** argv)
     const std::chrono::duration<double> elapsedSeconds = simulationEnd - simulationStart;
     std::cout << "Simulation finished in " << setprecision(3) << elapsedSeconds.count()
               << " seconds" << std::endl;
+	return 0;
 }
