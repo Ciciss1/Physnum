@@ -58,25 +58,26 @@ double V(double V0, double n_v, double x, double xL, double xR)
 
 // LUIZA : Calcul de la probabilité que la particule se trouve à gauche de la barrière, avec xc le maximum local du potentiel :
 //NIL : ok
-double prob_left(double xL, double xR, double n_v, double dx, vec_cmplx psi)
-{
-	//Définition des variables dont on a besoin
+double prob_left(double xL, double xR, double n_v, double dx, vec_cmplx psi, vector<double> x)
+{//Définition des variables dont on a besoin
 	double xc;
 	int c;
 	double integrale(0.00); 
 	// Calcul des variables 
 	xc = xL + (xR - xL)/(n_v);
-	c = (xc -xL)/dx ; 
 	// Calcul de l'intégrale en utilisant la règle des trapèzes
-	for(int i = 0; i< c ; ++i){
+	int i = 0;
+	while (x[i] < xc)
+	{
 		integrale += (pow(abs(psi[i]),2) + pow(abs(psi[i+1]),2))/2;
+		i++;
 	}
 	integrale*=dx;
     return integrale;
 }
 //LUIZA : Calcul de la probabilité qu'on trouve la particule à droite de la barrière, avec xc le maximum local du potentiel
 //NIL : Ok
-double prob_right(double xL, double xR, double n_v, int Npoints, double dx, vec_cmplx psi)
+double prob_right(double xL, double xR, double n_v, int Npoints, double dx, vec_cmplx psi, vector<double> x)
 {
 	//Définition des variables dont on a besoin
 	double xc;
@@ -84,47 +85,82 @@ double prob_right(double xL, double xR, double n_v, int Npoints, double dx, vec_
 	double integrale(0.00) ; 
 	// Calcul des variables
 	xc = xL + (xR - xL)/(n_v);
-	c = (xc -xL)/dx ; 
-	// Calcul de l'intégrale en utilisant la règle des trapèzes
-	for(int i = c ; i < (Npoints-1) ; ++i){
-		integrale += (pow(abs(psi[i]),2) + pow(abs(psi[i+1]),2))/2;
+	int i = 0;
+	while (x[i] < xc)
+	{
+		i++;
+	}
+	for (int j = i; j < (Npoints-1); ++j)
+	{
+		integrale += (pow(abs(psi[j]),2) + pow(abs(psi[j+1]),2))/2;
 	}
 	integrale *= dx;
 	return integrale;
 }	
+
+double Proba_totale(double xL, double xR, double n_v, int Npoints, double dx, vec_cmplx psi)
+{
+	//Définition des variables dont on a besoin
+	double integrale(0.00) ; 
+	// Calcul de l'intégrale en utilisant la règle des trapèzes
+	for(int i = 0 ; i < (Npoints-1) ; ++i){
+		integrale += (pow(abs(psi[i]),2) + pow(abs(psi[i+1]),2))/2;
+	}
+	integrale *= dx ; 
+	return integrale;
+}
 
 // LUIZA : Définition de l'énergie de la particule, moyenne de l'Hamiltonien
 // NIL : pas ok, voir commentaire dans la fonction
 //NIL : re pas ok, le psi_star était mal défini 
 
 //UTILISER LA MATRICE
-double E(vec_cmplx psi, vector<double> x, double V0, double m, double n_v, double xL, double xR, double dx, double hbar, int Npoints)
+double E(vec_cmplx psi, vector<double> x, double V0, double m, double n_v, double xL, double xR, double dx, double hbar, int Npoints, vec_cmplx dH, vec_cmplx aH, vec_cmplx cH)
 {
-	// Définition des variables dont on a besoin :
-	vec_cmplx psi_star(Npoints) ;
-	complex<double> integrale(0.00); 
-	vec_cmplx derivee2_psi(Npoints);
-	//Calcul du conjugué complexe de psi
-	for(int i=0; i < Npoints ; ++i){ 
-		psi_star[i] = conj(psi[i]) ; 
+	// // Définition des variables dont on a besoin :
+	// vec_cmplx psi_star(Npoints) ;
+	// complex<double> integrale(0.00); 
+	// vec_cmplx derivee2_psi(Npoints);
+	// //Calcul du conjugué complexe de psi
+	// for(int i=0; i < Npoints ; ++i){ 
+	// 	psi_star[i] = conj(psi[i]) ; 
+	// }
+	// //Calcul de la dérivée spatiale de psi :
+	// //Pour les points d'extremité : 
+	// derivee2_psi[0] = 0 ; 
+	// derivee2_psi[Npoints-1] = 0;
+	// //Pour les points intérieurs :
+	// for(int i=1 ; i < (Npoints - 1) ; ++i){
+	// 	derivee2_psi[i] = (psi[i+1]-2.0*psi[i]+psi[i-1])/pow(dx,2) ; 
+	// }
+	// // Calcul de l'intégrale en utilisant la règle du trapèze : 
+	// for(int i = 0; i < (Npoints-1) ; ++i){
+	// 	//paranthèse mal fermée
+	// 	// ton code
+	// 	// integrale += (psi_star[i]*(-(pow(hbar,2.0)/(2.0*m))*derivee2_psi[i]+V(V0,n_v,x[i],xL,xR)*psi[i]) + psi_star[i+1]*(-(pow(hbar,2.0)/(2.0*m))*derivee2_psi[i+1] + V(V0, n_v, x[i+1], xL, xR)*psi[i+1]))/2.0 ; 
+	// 	//mon code :
+	// 	integrale += (psi_star[i]*(-(pow(hbar,2.0)/(2.0*m))*derivee2_psi[i]+V(V0,n_v,x[i],xL,xR))*psi[i] + psi_star[i+1]*(-(pow(hbar,2.0)/(2.0*m))*derivee2_psi[i+1] + V(V0, n_v, x[i+1], xL, xR))*psi[i+1])/2.0 ;
+	// }
+    // integrale *= dx ; 
+
+	// we have to compute psi^* H psi
+
+	// compute H psi
+	vec_cmplx H_psi(Npoints, 0.);
+	for (int i(0); i < Npoints; ++i) {
+		H_psi[i] = dH[i] * psi[i];
+		if (i > 0)
+			H_psi[i] += aH[i] * psi[i - 1];
+		if (i < Npoints - 1)
+			H_psi[i] += cH[i] * psi[i + 1];
 	}
-	//Calcul de la dérivée spatiale de psi :
-	//Pour les points d'extremité : 
-	derivee2_psi[0] = 0 ; 
-	derivee2_psi[Npoints-1] = 0;
-	//Pour les points intérieurs :
-	for(int i=1 ; i < (Npoints - 1) ; ++i){
-		derivee2_psi[i] = (psi[i+1]-2.0*psi[i]+psi[i-1])/pow(dx,2) ; 
+
+	// compute psi^* H psi
+	complex<double> integrale(0.);
+	for (int i(0); i < Npoints; ++i) {
+		integrale += conj(psi[i]) * H_psi[i];
 	}
-	// Calcul de l'intégrale en utilisant la règle du trapèze : 
-	for(int i = 0; i < (Npoints-1) ; ++i){
-		//paranthèse mal fermée
-		// ton code
-		// integrale += (psi_star[i]*(-(pow(hbar,2.0)/(2.0*m))*derivee2_psi[i]+V(V0,n_v,x[i],xL,xR)*psi[i]) + psi_star[i+1]*(-(pow(hbar,2.0)/(2.0*m))*derivee2_psi[i+1] + V(V0, n_v, x[i+1], xL, xR)*psi[i+1]))/2.0 ; 
-		//mon code :
-		integrale += (psi_star[i]*(-(pow(hbar,2.0)/(2.0*m))*derivee2_psi[i]+V(V0,n_v,x[i],xL,xR))*psi[i] + psi_star[i+1]*(-(pow(hbar,2.0)/(2.0*m))*derivee2_psi[i+1] + V(V0, n_v, x[i+1], xL, xR))*psi[i+1])/2.0 ;
-	}
-    integrale *= dx ; 
+
     return real(integrale);
 }
 
@@ -458,7 +494,7 @@ main(int argc, char** argv)
 	// cout << "pincertitude = " << pincertitude(psi, complex_i, dx, hbar, Npoints) << endl;
 
     // Ecriture des observables :
-    fichier_observables << t << " " << prob_left(xL, xR, n_v, dx, psi) << " " << prob_right(xL, xR, n_v, Npoints, dx, psi) << " " << E(psi, x, V0, m, n_v, xL, xR, dx, hbar, Npoints) << " " << xmoy(psi, x, dx, Npoints) << " "  
+    fichier_observables << t << " " << prob_left(xL, xR, n_v, dx, psi,x) << " " << prob_right(xL, xR, n_v, Npoints, dx, psi,x) << " " << E(psi, x, V0, m, n_v, xL, xR, dx, hbar, Npoints,dH,aH,cH) << " " << xmoy(psi, x, dx, Npoints) << " "  
                 << x2moy(psi, x, dx, Npoints) << " " << pmoy(psi, complex_i, dx, hbar, Npoints) << " " << p2moy(psi, dx, hbar, Npoints) << " " << xincertitude(psi, x, dx, Npoints) << " " 
                 << pincertitude(psi, complex_i, dx, hbar, Npoints) << endl; 
     // Boucle temporelle :    
@@ -495,8 +531,8 @@ main(int argc, char** argv)
         fichier_psi << endl;
 
         // Ecriture des observables :
-        fichier_observables << t << " " << prob_left(xL,xR,n_v,dx, psi) << " " << prob_right(xL, xR, n_v, Npoints, dx, psi)
-                    << " " << E(psi, x, V0, m, n_v, xL, xR, dx, hbar, Npoints) << " " << xmoy(psi, x, dx, Npoints) << " "  
+        fichier_observables << t << " " << prob_left(xL,xR,n_v,dx,psi,x) << " " << prob_right(xL, xR, n_v, Npoints, dx, psi,x)
+                    << " " << E(psi, x, V0, m, n_v, xL, xR, dx, hbar, Npoints,dH,aH,cH) << " " << xmoy(psi, x, dx, Npoints) << " "  
                     << x2moy(psi, x, dx, Npoints) << " " << pmoy(psi, complex_i, dx, hbar, Npoints) << " " << p2moy(psi, dx, hbar, Npoints) << " " 
                     << xincertitude(psi, x, dx, Npoints) << " " << pincertitude(psi, complex_i, dx, hbar, Npoints) << endl; 
     } // Fin de la boucle temporelle
