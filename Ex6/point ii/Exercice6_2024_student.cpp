@@ -169,6 +169,8 @@ double E(vec_cmplx psi, vector<double> x, double V0, double m, double n_v, doubl
 		integrale += conj(psi[i]) * H_psi[i];
 	}
 
+	integrale *= dx;
+
     return real(integrale);
 }
 

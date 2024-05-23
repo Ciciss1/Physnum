@@ -41,7 +41,7 @@ Nintervals = 256
 
 x = np.linspace(xL, xR, Nintervals+1)
 
-V0s = [1e4, 1000]
+V0s = [0, 1000]
 outputs = ["pointa_V0-", "pointa_V0+"]
 cases = ["V0<E", "V0>E"]
 
@@ -54,11 +54,11 @@ for i in range(Ncases):
 
     # run the simulation
 
-    cmd = f"{repertoire}{executable} {input_filename} tfin={tfin} xL={xL} xR={xR} V0={V0} nv={n_v} x0={x0} n={n} sigma_norm={sigma_norm} dt={dt} Nintervals={Nintervals} output={output}"
+    # cmd = f"{repertoire}{executable} {input_filename} tfin={tfin} xL={xL} xR={xR} V0={V0} nv={n_v} x0={x0} n={n} sigma_norm={sigma_norm} dt={dt} Nintervals={Nintervals} output={output}"
 
-    print(cmd)
-    subprocess.run(cmd, shell=True)
-    print('Done.')
+    # print(cmd)
+    # subprocess.run(cmd, shell=True)
+    # print('Done.')
 
 
     #extract data
@@ -102,7 +102,8 @@ for i in range(Ncases):
 
     #plot
     ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$x$ [m]", ylabel=r'$t$ [s]')
-    c = ax.contourf(x, t, psi_module, levels=20, cmap = "plasma")
+    levels = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0]
+    c = ax.contourf(x, t, psi_module, levels=40, cmap = "plasma")
     fig.colorbar(c, ax=ax,label=r'$|\psi(x,t)|^2$')
     ax.set_xlabel(r'$x$ [m]')
     ax.set_ylabel(r'$t$ [s]')
@@ -119,7 +120,7 @@ for i in range(Ncases):
     u.set_legend_properties(ax, fontsize=18)
     u.savefig(fig, f"POINT_A_E(t)_{case}", ext = ext)
     
-    # #---------------Animate-----------------
+    # # #---------------Animate-----------------
     
     # # Initialisation de la figure
     # fig, ax = plt.subplots()
@@ -134,9 +135,9 @@ for i in range(Ncases):
     #     return line,
 
     # # Fonction d'animation
-    # def animate(i):
-    #     line.set_data(x, psi_module[i])
-    #     ax.set_title(f"Case : {cases[i]}")
+    # def animate(j):
+    #     line.set_data(x, psi_module[j])
+    #     ax.set_title(f"V0 = {V0s[i]}")
     #     return line,
 
     # #------animate-------
@@ -147,7 +148,7 @@ for i in range(Ncases):
     # # ani.save("simulation_vagues.gif", writer='pillow')
 
     # FFwriter=animation.FFMpegWriter(fps=2000/40, extra_args=['-vcodec', 'libx264'])
-    # ani.save(f"./animations/simulation_{cases[i]}.mp4", writer=FFwriter)
+    # ani.save(f"./animations/simulation_V0={V0s[i]}.mp4", writer=FFwriter)
 
 
 
