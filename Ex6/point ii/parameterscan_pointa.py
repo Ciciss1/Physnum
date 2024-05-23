@@ -16,7 +16,7 @@ from matplotlib import animation
 from scipy.signal import find_peaks
 from scipy.optimize import curve_fit
 
-ext = "pdf"
+ext = "png"
 
 
 # TODO adapt to what you need (folder path executable input filename)
@@ -41,9 +41,9 @@ Nintervals = 256
 
 x = np.linspace(xL, xR, Nintervals+1)
 
-V0s = [0,1000,1325,1500,5000]
+V0s = [0,1150,1323.75,1450,5000]
 outputs = ["pointa_V0--","pointa_V0-", "pointa_V0=", "pointa_V0+", "pointa_V0++"]
-cases = ["V0=0", "V0=1000", "V0=1325", "V0=1500", "V0=5000"]
+cases = ["V0=0", "V0=1150", "V0=1323", "V0=1450", "V0=5000"]
 
 Ncases = len(V0s)
 
@@ -52,12 +52,12 @@ for i in range(Ncases):
     output = outputs[i]
     case = cases[i]
 
-    # run the simulation
-    cmd = f"{repertoire}{executable} {input_filename} tfin={tfin} xL={xL} xR={xR} V0={V0} nv={n_v} x0={x0} n={n} sigma_norm={sigma_norm} dt={dt} Nintervals={Nintervals} output={output}"
+    # # run the simulation
+    # cmd = f"{repertoire}{executable} {input_filename} tfin={tfin} xL={xL} xR={xR} V0={V0} nv={n_v} x0={x0} n={n} sigma_norm={sigma_norm} dt={dt} Nintervals={Nintervals} output={output}"
 
-    print(cmd)
-    subprocess.run(cmd, shell=True)
-    print('Done.')
+    # print(cmd)
+    # subprocess.run(cmd, shell=True)
+    # print('Done.')
 
 
     #extract data
@@ -101,10 +101,10 @@ for i in range(Ncases):
 
     #plot
     ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$x$ [m]", ylabel=r'$t$ [s]')
-    levels1 = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+    levels1 = np.array([0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
     levels2 = np.linspace(1,np.max(psi_module),20)
     levels = np.concatenate((levels1,levels2))
-    c = ax.contourf(x, t, psi_module, levels=levels, cmap = "plasma")
+    c = ax.contourf(x, t, psi_module, levels=levels, cmap = "magma")
     fig.colorbar(c, ax=ax,label=r'$|\psi(x,t)|^2$')
     ax.set_xlabel(r'$x$ [m]')
     ax.set_ylabel(r'$t$ [s]')
