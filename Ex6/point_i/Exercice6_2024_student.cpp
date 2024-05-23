@@ -158,7 +158,7 @@ double E(vec_cmplx psi, vector<double> x, double V0, double m, double n_v, doubl
 	for (int i(0); i < Npoints; ++i) {
 		H_psi[i] = dH[i] * psi[i];
 		if (i > 0)
-			H_psi[i] += aH[i] * psi[i - 1];
+			H_psi[i] += aH[i-1] * psi[i - 1];
 		if (i < Npoints - 1)
 			H_psi[i] += cH[i] * psi[i + 1];
 	}
@@ -168,6 +168,8 @@ double E(vec_cmplx psi, vector<double> x, double V0, double m, double n_v, doubl
 	for (int i(0); i < Npoints; ++i) {
 		integrale += conj(psi[i]) * H_psi[i];
 	}
+
+	integrale *= dx;
 
     return real(integrale);
 }
@@ -348,8 +350,6 @@ main(int argc, char** argv)
     double V0 = configFile.get<double>("V0");
     double n_v = 2.0;
     double n  = configFile.get<int>("n"); // Read mode number as integer, convert to double
-	string output = configFile.get<string>("output");
-	cout << "output = " << output << endl;
 
     // Parametres numeriques :
 
@@ -374,7 +374,7 @@ main(int argc, char** argv)
 
     // initialization time and position to check Probability
     double t = 0;
-    unsigned int Nx0 = floor((xR*0.5 - xL)/(xR-xL)*Npoints); //chosen xR*0.5 since top of potential is at half x domain
+    unsigned int Nx0 = round((Npoints - 1)/2); //chosen xR*0.5 since top of potential is at half x domain
   
     double x0 = configFile.get<double>("x0");
     double k0 = 2 * M_PI * n / (xR - xL);
@@ -470,7 +470,7 @@ main(int argc, char** argv)
 
     // Fichiers de sortie :
 
-	
+	string output = configFile.get<string>("output");
     ofstream fichier_potentiel((output + "_pot").c_str());
     fichier_potentiel.precision(15);
     for (int i(0); i < Npoints; ++i)
@@ -556,4 +556,6 @@ main(int argc, char** argv)
     std::cout << "Simulation finished in " << setprecision(3) << elapsedSeconds.count()
               << " seconds" << std::endl;
 	return 0;
+
+	
 }
