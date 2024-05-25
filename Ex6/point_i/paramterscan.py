@@ -152,10 +152,9 @@ u.savefig(fig, f"psi_imagV0", ext = ext)
 
 ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$t$ [s]", ylabel=r'Probabilité')
 
-ax.plot(t,prob_left, label=r"Pr$_{x<0}(t)$")
-ax.plot(t,prob_right, label=r"Pr$_{x>0}(t)$")
-ax.plot(t,prob_left+prob_right, label=r"Pr$_{x<0}(t)$ + Pr$_{x>0}(t)$", linestyle="--", color = "black")
 
+ax.plot(t,prob_left+prob_right, label=r"Pr$_{tot}(t)$", linestyle="--", color = "black")
+plt.ylim(0, 1.1*np.max(prob_left+prob_right))
 plt.tight_layout()
 u.set_legend_properties(ax, fontsize=18)
 u.savefig(fig, f"probV0", ext = ext)
