@@ -16,7 +16,7 @@ from matplotlib import animation
 from scipy.signal import find_peaks
 from scipy.optimize import curve_fit
 
-ext = "png"
+ext = "pdf"
 
 
 # TODO adapt to what you need (folder path executable input filename)
@@ -84,18 +84,18 @@ u.set_legend_properties(ax, fontsize=18)
 u.savefig(fig, f"pmoyV0", ext = ext)
 
 #-----------------plot dxt-----------------
-ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$t$ [s]", ylabel=r"$\Delta x (t)$")
+ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$t$ [s]", ylabel=r"$\langle \Delta x \rangle (t)$")
 
-ax.plot(t,xincertitude, label=r"$\Delta x (t)$")
+ax.plot(t,xincertitude, label=r"$\langle \Delta x \rangle (t)$")
 
 plt.tight_layout()
 u.set_legend_properties(ax, fontsize=18)
 u.savefig(fig, f"dxtV0", ext = ext)
 
 #-----------------plot dpt-----------------
-ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$t$ [s]", ylabel=r"$\Delta p (t)$")
+ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$t$ [s]", ylabel=r"$\langle \Delta p \rangle (t)$")
 
-ax.plot(t,pincertitude, label=r"$\Delta p (t)$")
+ax.plot(t,pincertitude, label=r"$\langle \Delta p \rangle (t)$")
 
 plt.tight_layout()
 u.set_legend_properties(ax, fontsize=18)
@@ -179,9 +179,9 @@ u.savefig(fig, f"E_large_scaleV0", ext = ext)
 
 #-----------------Eisenberg uncertainty principle-----------------
 
-ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$t$ [s]", ylabel=r'$\Delta x(t) \Delta p(t)$')
+ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$t$ [s]", ylabel=r'$\langle \Delta x \rangle (t) \langle \Delta p\rangle(t)$')
 
-ax.plot(t,xincertitude*pincertitude, label=r"$\Delta x(t) \Delta p(t)$")
+ax.plot(t,xincertitude*pincertitude, label=r"$\langle \Delta x \rangle (t) \langle \Delta p\rangle(t)$")
 ax.plot(t, 0.5*np.ones_like(t), linestyle='--', color='black', label=r"$\hbar/2$")
 
 plt.tight_layout()
