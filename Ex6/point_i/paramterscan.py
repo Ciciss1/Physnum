@@ -16,7 +16,7 @@ from matplotlib import animation
 from scipy.signal import find_peaks
 from scipy.optimize import curve_fit
 
-ext = "pdf"
+ext = "png"
 
 
 # TODO adapt to what you need (folder path executable input filename)
