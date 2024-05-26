@@ -187,3 +187,34 @@ plt.tight_layout()
 u.set_legend_properties(ax, fontsize=18)
 u.savefig(fig, f"HeinsebergV0", ext = ext)
 
+v_0 = np.sqrt(2*E[0])
+
+x_t = np.zeros_like(t)
+x_t[0] = x0
+for i in range(len(x_t)-1):
+    x_t[i+1] = x_t[i] + v_0*dt
+    if  x_t[i] >= xR and v_0 > 0:
+        v_0 = -v_0
+    elif x_t[i] <= xL and v_0 < 0:
+        v_0 = -v_0
+
+v_01 = pmoy[0]
+
+x_t1 = np.zeros_like(t)
+x_t1[0] = x0
+for i in range(len(x_t1)-1):
+    x_t1[i+1] = x_t1[i] + v_01*dt
+    if  x_t1[i] >= xR and v_01 > 0:
+        v_01 = -v_01
+    elif x_t1[i] <= xL and v_01 < 0:
+        v_01 = -v_01    
+
+#-----------------plot x(t)-----------------
+ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$t$ [s]", ylabel=r'$x(t)$')
+
+ax.plot(t,xmoy, label=r"$\langle x \rangle (t)$ quantique")
+ax.plot(t, x_t, label=r'$x(t)$ classique même E(0)', linestyle='--')
+ax.plot(t, x_t1, label=r'$x(t)$ classique même p(0)', linestyle='--')
+plt.tight_layout()
+u.set_legend_properties(ax, fontsize=18)
+u.savefig(fig, f"x_t", ext = ext)
