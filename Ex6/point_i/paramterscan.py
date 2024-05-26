@@ -218,3 +218,18 @@ ax.plot(t, x_t1, label=r'$x(t)$ classique même p(0)', linestyle='--')
 plt.tight_layout()
 u.set_legend_properties(ax, fontsize=18)
 u.savefig(fig, f"x_t", ext = ext)
+
+#-----------------plot psi_real and psi_module at different times-----------------
+ax, fig = u.create_figure_and_apply_format(figsize=(8, 6), xlabel=r"$x$ [m]", ylabel=r'$Re(\psi)$ / $|\psi|$')
+selected_times = [0, 0.015, 0.025]  # Choose the times you want to plot
+
+for t_index in selected_times:
+    t_index = int(t_index / dt)  # Convert time to index
+    ax.plot(x, psi_real[t_index], label=r'$Re(\psi(x, t={})$'.format(np.round(t_index*dt,3)))
+    ax.plot(x, psi_module[t_index], label=r'$|\psi(x, t={})$'.format(np.round(t_index*dt,3)))
+    ax.set_xlabel(r'$x$ [m]')
+    ax.set_ylabel(r'$Re(\psi)$ / $|\psi|$')
+
+plt.tight_layout()
+u.set_legend_properties(ax, fontsize=18, ncol=2)
+u.savefig(fig, f"psi_real_module_t", ext=ext)
