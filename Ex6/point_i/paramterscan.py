@@ -213,27 +213,25 @@ psi_imag = data_psi2[:,2::3]
 # u.set_legend_properties(ax, fontsize=18)
 # u.savefig(fig, f"x_t", ext = ext)
 
-# #-----------------plot psi_real and psi_module at different times-----------------
-# ax, fig = u.create_figure_and_apply_format(figsize=(8, 6), xlabel=r"$x$ [a.u.]", ylabel=r'$Re(\psi)$ / $|\psi|$ [a.u.]')
-# selected_times = [0, 0.015, 0.025]  # Choose the times you want to plot
+#-----------------plot psi_real and psi_module at different times-----------------
+ax, fig = u.create_figure_and_apply_format(figsize=(8, 6), xlabel=r"$x$ [a.u.]", ylabel=r'$Re(\psi)$ / $|\psi|$ [a.u.]')
+selected_times = [0, 0.015, 0.025]  # Choose the times you want to plot
 
-# for t_index in selected_times:
-#     t_index = int(t_index / dt)  # Convert time to index
-#     ax.plot(x, psi_real[t_index], label=r'$Re(\psi(x, t={})$'.format(np.round(t_index*dt,3)))
-#     ax.plot(x, psi_module[t_index], label=r'$|\psi(x, t={})$'.format(np.round(t_index*dt,3)))
-#     ax.set_xlabel(r'$x$ [m]')
-#     ax.set_ylabel(r'$Re(\psi)$ / $|\psi|$')
+for t_index in selected_times:
+    t_index = int(t_index / dt)  # Convert time to index
+    ax.plot(x, psi_real[t_index], label=r'$Re(\psi(x, t={})$'.format(np.round(t_index*dt,3)))
+    ax.plot(x, psi_module[t_index], label=r'$|\psi(x, t={})$'.format(np.round(t_index*dt,3)))
 
-# plt.tight_layout()
-# u.set_legend_properties(ax, fontsize=18, ncol=2)
-# u.savefig(fig, f"psi_real_module_t", ext=ext)
-
-#-----------------plot V(x)-----------------
-V0 = 1400
-V = 0.5 * V0 * (1 + np.cos(2 * np.pi * n_v * (x - xL) / (xR - xL)))
-
-ax, fig = u.create_figure_and_apply_format(figsize=(8, 6), xlabel=r"$x$ [a.u.]", ylabel=r"$V(x)$ [a.u.]")
-ax.plot(x, V, label=r"$V(x)$")
 plt.tight_layout()
-u.set_legend_properties(ax, fontsize=18)
-u.savefig(fig, f"Vx", ext=ext)
+u.set_legend_properties(ax, fontsize=18, ncol=2)
+u.savefig(fig, f"psi_real_module_t", ext=ext)
+
+# #-----------------plot V(x)-----------------
+# V0 = 1400
+# V = 0.5 * V0 * (1 + np.cos(2 * np.pi * n_v * (x - xL) / (xR - xL)))
+
+# ax, fig = u.create_figure_and_apply_format(figsize=(8, 6), xlabel=r"$x$ [a.u.]", ylabel=r"$V(x)$ [a.u.]")
+# ax.plot(x, V, label=r"$V(x)$")
+# plt.tight_layout()
+# u.set_legend_properties(ax, fontsize=18)
+# u.savefig(fig, f"Vx", ext=ext)
