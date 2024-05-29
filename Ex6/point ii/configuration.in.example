@@ -1,5 +1,5 @@
 % Physique :
-tfin = 0.1
+tfin = 0.03
 xL = -1
 xR = 1
 V0 = 50

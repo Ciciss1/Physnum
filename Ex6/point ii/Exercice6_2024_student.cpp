@@ -374,7 +374,7 @@ main(int argc, char** argv)
 
     // initialization time and position to check Probability
     double t = 0;
-    unsigned int Nx0 = floor((xR*0.5 - xL)/(xR-xL)*Npoints); //chosen xR*0.5 since top of potential is at half x domain
+    unsigned int Nx0 = round((Npoints-1)/2); //chosen xR*0.5 since top of potential is at half x domain
   
     double x0 = configFile.get<double>("x0");
     double k0 = 2 * M_PI * n / (xR - xL);
@@ -507,8 +507,9 @@ main(int argc, char** argv)
     fichier_observables << t << " " << prob_left(xL, xR, n_v, dx, psi,x) << " " << prob_right(xL, xR, n_v, Npoints, dx, psi,x) << " " << E(psi, x, V0, m, n_v, xL, xR, dx, hbar, Npoints,dH,aH,cH) << " " << xmoy(psi, x, dx, Npoints) << " "  
                 << x2moy(psi, x, dx, Npoints) << " " << pmoy(psi, complex_i, dx, hbar, Npoints) << " " << p2moy(psi, dx, hbar, Npoints) << " " << xincertitude(psi, x, dx, Npoints) << " " 
                 << pincertitude(psi, complex_i, dx, hbar, Npoints) << endl; 
+	t +=dt;
     // Boucle temporelle :    
-    while (t < tfin) {
+    while (t < tfin + dt/2.) {
 
         // TODO Calcul du membre de droite :
         //LUIZA : Je me casse la tête dessus depuis jsp cb de temps, j'ai strictement aucune idée de ce qu'il veut que je fasse 
@@ -529,8 +530,12 @@ main(int argc, char** argv)
 
         // Resolution de A * psi = psi_tmp :
         triangular_solve(dA, aA, cA, psi_tmp, psi);
-        t += dt;
+		
+        
+		// cout << "t = " << t << endl;
+		
 
+		// Ecriture de la fonction d'onde :
 		double psi_smodule;
         // t0 writing
         for (int i(0); i < Npoints; ++i){
@@ -545,7 +550,8 @@ main(int argc, char** argv)
                     << " " << E(psi, x, V0, m, n_v, xL, xR, dx, hbar, Npoints,dH,aH,cH) << " " << xmoy(psi, x, dx, Npoints) << " "  
                     << x2moy(psi, x, dx, Npoints) << " " << pmoy(psi, complex_i, dx, hbar, Npoints) << " " << p2moy(psi, dx, hbar, Npoints) << " " 
                     << xincertitude(psi, x, dx, Npoints) << " " << pincertitude(psi, complex_i, dx, hbar, Npoints) << endl; 
-    } // Fin de la boucle temporelle
+    t += dt;
+	} // Fin de la boucle temporelle
 
 
 
