@@ -109,8 +109,7 @@ ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$x$ [a.u.]", y
 # levels = np.concatenate((levels1,levels2))
 c = ax.contourf(x, t, psi_module2, levels=20, cmap = "magma")
 fig.colorbar(c, ax=ax,label=r'$|\psi(x,t)|^2$ [a.u.]')
-ax.set_xlabel(r'$x$ [m]')
-ax.set_ylabel(r'$t$ [s]')
+
 plt.tight_layout()
 u.savefig(fig, f"psi2V0", ext = ext)
 
@@ -122,8 +121,7 @@ ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$x$ [a.u.]", y
 # levels = np.concatenate((levels1,levels2))
 c = ax.contourf(x, t, psi_module, levels=20, cmap = "magma")
 fig.colorbar(c, ax=ax,label=r'$|\psi(x,t)|$')
-ax.set_xlabel(r'$x$ [m]')
-ax.set_ylabel(r'$t$ [s]')
+
 plt.tight_layout()
 u.savefig(fig, f"psiV0", ext = ext)
 
@@ -131,10 +129,8 @@ u.savefig(fig, f"psiV0", ext = ext)
 
 ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$x$ [a.u.]", ylabel=r'$t$ [a.u.]')
 
-c = ax.contourf(x, t, psi_real, levels=20, cmap = "magma")
+c = ax.contourf(x, t, psi_real, levels=20, cmap = "RdBu")
 fig.colorbar(c, ax=ax,label=r'$Re(\psi(x,t))$')
-ax.set_xlabel(r'$x$ [m]')
-ax.set_ylabel(r'$t$ [s]')
 plt.tight_layout()
 u.savefig(fig, f"psi_realV0", ext = ext)
 
@@ -143,8 +139,6 @@ u.savefig(fig, f"psi_realV0", ext = ext)
 ax,fig = u.create_figure_and_apply_format(figsize=(8, 6),xlabel=r"$x$ [a.u.]", ylabel=r'$t$ [a.u.]')
 c = ax.contourf(x, t, psi_imag, levels=20, cmap = "magma")
 fig.colorbar(c, ax=ax,label=r'$Im(\psi(x,t))$')
-ax.set_xlabel(r'$x$ [m]')
-ax.set_ylabel(r'$t$ [s]')
 plt.tight_layout()
 u.savefig(fig, f"psi_imagV0", ext = ext)
 
